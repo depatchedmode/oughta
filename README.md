@@ -29,6 +29,8 @@ rust/
 
 **Git:** [commit skill](git/skills/commit/SKILL.md) for preparing logical, atomic commits from uncommitted work.
 
+**Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
+
 ## Use in a project
 
 1. Adapt the domain’s fragment to the target project’s conventions, checks and approval policies, then merge it into the existing `AGENTS.md`.
