@@ -1,6 +1,6 @@
 # Rust practices: reference documentation
 
-Primary sources supporting the Rust rules and [rust-practices skill](SKILL.md). Consult the relevant topic rather than reading the entire catalog. Layout and stricter lint choices are house conventions, not language requirements; use versioned documentation matching the project where available.
+Primary sources supporting the [Rust guidance fragment](AGENTS.fragment.md) and [rust-practices skill](skills/rust-practices/SKILL.md). Consult the relevant topic rather than reading the entire catalog. Layout and stricter lint choices are house conventions, not language requirements; use versioned documentation matching the project where available.
 
 ## Official Rust documentation
 

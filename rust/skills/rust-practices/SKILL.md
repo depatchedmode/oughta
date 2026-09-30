@@ -5,7 +5,7 @@ description: Apply repository Rust conventions when writing, reviewing or restru
 
 # Rust practices
 
-General Rust practices, decision procedures and examples. Read the project’s `AGENTS.md` for authoritative conventions, check commands and approval requirements, then use the relevant sections below. Consult [reference documentation](references.md) when you need supporting detail.
+General Rust practices, decision procedures and examples. Read the project’s `AGENTS.md` for authoritative conventions, check commands and approval requirements, then use the relevant sections below. Consult [reference documentation](../../references.md) when you need supporting detail.
 
 ## 0. Orient before editing
 
@@ -286,4 +286,4 @@ To produce the measurements required by the project:
 
 ## Primary sources
 
-See [reference documentation](references.md) for sources supporting these decisions and optional further reading. Use documentation matching the project’s toolchain and dependency versions.
+See [reference documentation](../../references.md) for sources supporting these decisions and optional further reading. Use documentation matching the project’s toolchain and dependency versions.

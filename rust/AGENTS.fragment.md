@@ -1,8 +1,8 @@
+> Adapt and merge this fragment into your project’s `AGENTS.md`; it does not govern work on `oughta`. Review layout conventions, check commands, lint configuration and toolchain compatibility. Update links to the installed skill and shared references, then remove this note.
+
 ## Rust
 
-Rules for Rust changes in this repo. Preserve existing layout and style unless asked to migrate them; existing code does not override explicit safety or approval requirements. Report conflicts. Apply the relevant sections of the [rust-practices skill](skills/rust-practices/SKILL.md) for general Rust practices, procedures and examples. This file owns repository conventions, commands and approval requirements.
-
-> Adoption: before copying this section into a project, adapt its layout conventions, check commands and lint configuration to that project. Check toolchain compatibility and update the skill link to its installed location. Remove this note after setup.
+Rules for Rust changes in this repo. Preserve existing layout and style unless asked to migrate them; existing code does not override explicit safety or approval requirements. Report conflicts. Apply the relevant sections of the [rust-practices skill](skills/rust-practices/SKILL.md) for general Rust practices, procedures and examples. This section owns repository conventions, commands and approval requirements. Consult the relevant [references](references.md) to verify technical behavior; report conflicts with project policy rather than silently overriding it.
 
 ### Feedback loop
 
