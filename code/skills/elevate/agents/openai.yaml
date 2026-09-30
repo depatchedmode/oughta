@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elevate"
+  short_description: "Polish selected git diffs"
+  default_prompt: "Use $elevate to clarify whether to inspect uncommitted changes or a branch diff, then make focused improvements for legibility, maintainability, correctness, and performance."

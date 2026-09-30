@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit"
+  short_description: "Create logical atomic commits"
+  default_prompt: "Use $commit to commit the uncommitted changes as one or more logical, atomic, semantic commits."
