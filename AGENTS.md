@@ -17,6 +17,7 @@
 
 ## Writing
 
+- Express the local-first bias through concrete defaults, justified exceptions and verifiable outcomes. Keep shared architecture guidance in `local-first/` and link to it instead of duplicating it across domains.
 - Prefer concrete decisions, procedures and examples over generic advice. Remove repetition without removing necessary context.
 - Distinguish project policy from technical facts and optional recommendations. Use primary sources for technical claims; check version-sensitive claims against the stated toolchain or dependency version.
 - Keep related practices in one skill unless a distinct workflow warrants another. Do not add placeholder domains or speculative scaffolding.

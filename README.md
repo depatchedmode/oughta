@@ -2,6 +2,8 @@
 
 How we oughta build things. Reusable guidance and skills for coding agents.
 
+Favor local-first systems and user-owned data, with peer-to-peer communication available wherever feasible and practical. Turn that preference into explicit design decisions and verifiable behavior, while respecting each project’s requirements.
+
 ## Organization
 
 Content is grouped by domain: a language, workflow, or discipline such as `rust`, `git`, `devops`, `ux`, `graphic-design`, or `writing`. Add domains when they have content.
@@ -20,6 +22,8 @@ rust/
 - **`references.md`** — shared primary sources and further reading. References used by only one skill can live with that skill.
 
 ## Available guidance
+
+**Local-first:** [project rules](local-first/AGENTS.fragment.md), [design skill](local-first/skills/local-first-design/SKILL.md), and [references](local-first/references.md). Use alongside language-specific guidance when designing storage, synchronization, or service dependencies.
 
 **Rust:** [project rules](rust/AGENTS.fragment.md), [practices skill](rust/skills/rust-practices/SKILL.md), and [references](rust/references.md).
 
