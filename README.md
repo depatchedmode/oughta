@@ -1,6 +1,6 @@
 # oughta
 
-How we oughta build things. Reusable guidance and skills for coding agents.
+How we oughta do things. Reusable guidance and skills for coding agents.
 
 ## Organization
 
