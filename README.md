@@ -1,6 +1,6 @@
 # oughta
 
-How we oughta build things. Reusable guidance and skills for coding agents.
+How we oughta do things. Reusable guidance and skills for coding agents.
 
 Favor local-first systems and user-owned data, with peer-to-peer communication available wherever feasible and practical. Turn that preference into explicit design decisions and verifiable behavior, while respecting each project’s requirements.
 
