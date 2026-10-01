@@ -1,0 +1,14 @@
+{
+  "name": "git",
+  "version": "0.1.0",
+  "description": "Prepare logical, atomic, semantic commits with the commit skill.",
+  "author": {
+    "name": "depatchedmode"
+  },
+  "repository": "https://github.com/depatchedmode/oughta",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Oughta Git",
+    "shortDescription": "Prepare logical, atomic, semantic commits with the commit skill."
+  }
+}

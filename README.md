@@ -12,6 +12,8 @@ Content is grouped by domain: a language, workflow, or discipline such as `rust`
 rust/
 ├── AGENTS.fragment.md
 ├── references.md
+├── .codex-plugin/
+│   └── plugin.json
 └── skills/
     └── rust-practices/
         └── SKILL.md
@@ -20,6 +22,11 @@ rust/
 - **`AGENTS.fragment.md`** — project rules to adapt and merge into another repository’s `AGENTS.md`.
 - **`skills/`** — reusable procedures and examples, with one folder per skill.
 - **`references.md`** — shared primary sources and further reading. References used by only one skill can live with that skill.
+- **`.codex-plugin/plugin.json`** — plugin metadata for installing the domain's skills and supporting files through Codex.
+
+The manifests use Codex's compatibility format, verified with Codex CLI 0.131.0.
+
+The repository's [marketplace catalog](.agents/plugins/marketplace.json) exposes each domain with skills as a separate plugin. The domain folder is the package root, so shared references and fragments travel with its skills and their relative links remain valid.
 
 ## Available guidance
 
@@ -30,6 +37,42 @@ rust/
 **Git:** [commit skill](git/skills/commit/SKILL.md) for preparing logical, atomic commits from uncommitted work.
 
 **Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
+
+## Install skills through Codex
+
+Add the marketplace from GitHub after the catalog and manifests have been committed and pushed to the ref you want to use:
+
+```sh
+codex plugin marketplace add depatchedmode/oughta
+codex plugin list --marketplace oughta
+```
+
+For a specific branch or tag, add `--ref <ref>` to the marketplace command. To use an existing checkout, including uncommitted packaging changes, add its repository root instead:
+
+```sh
+codex plugin marketplace add /absolute/path/to/oughta
+```
+
+Install the domains you want:
+
+| Plugin | Skill |
+| --- | --- |
+| `code@oughta` | `elevate` |
+| `git@oughta` | `commit` |
+| `local-first@oughta` | `local-first-design` |
+| `rust@oughta` | `rust-practices` |
+
+For example:
+
+```sh
+codex plugin add git@oughta
+```
+
+In the Codex app, add `depatchedmode/oughta` as a marketplace source, then select and install the desired domain plugins. For local testing, use the checkout's absolute path as the source. Start a new chat after installation to use the skills.
+
+The catalog makes every plugin available for explicit installation. These packages contain skills and supporting guidance; they have no connected services or authentication setup. Installing a plugin does not merge its `AGENTS.fragment.md` into a project's instructions. Adopt those rules explicitly using the procedure below.
+
+For Git-backed sources, refresh the catalog with `codex plugin marketplace upgrade oughta` after publishing changes. Follow the [official Codex plugin packaging documentation](https://developers.openai.com/plugins/build/plugins) for marketplace and installation behavior.
 
 ## Use in a project
 
@@ -43,5 +86,7 @@ Preserve the target project’s existing instructions when adopting or updating 
 ## Contributing
 
 Keep guidance concise, actionable and grounded in primary sources. Put project requirements in fragments, techniques in skills, and shared citations in domain references. Prefer improving an existing skill before splitting it into separate workflows.
+
+When adding or changing a domain plugin, update its `.codex-plugin/plugin.json` version and metadata, keep all skill dependencies inside the domain folder, and add or update its entry in the marketplace catalog. Keep the installation table above in sync. Plugin packaging does not change a skill's policy or approval boundaries.
 
 See the root [AGENTS.md](AGENTS.md) for instructions on maintaining this repository. Domain fragments are reusable content, not active instructions for working on `oughta`.
