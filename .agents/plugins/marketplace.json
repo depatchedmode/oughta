@@ -1,0 +1,56 @@
+{
+  "name": "oughta",
+  "interface": {
+    "displayName": "Oughta"
+  },
+  "plugins": [
+    {
+      "name": "code",
+      "source": {
+        "source": "local",
+        "path": "./code"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "git",
+      "source": {
+        "source": "local",
+        "path": "./git"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "local-first",
+      "source": {
+        "source": "local",
+        "path": "./local-first"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "rust",
+      "source": {
+        "source": "local",
+        "path": "./rust"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
