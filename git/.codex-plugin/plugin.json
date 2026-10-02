@@ -1,7 +1,7 @@
 {
   "name": "git",
-  "version": "0.2.0",
-  "description": "Prepare atomic commits and carry issues through acceptance, review, cleanup, and a PR.",
+  "version": "0.1.0",
+  "description": "Prepare logical, atomic, semantic commits with the commit skill.",
   "author": {
     "name": "depatchedmode"
   },
@@ -9,6 +9,6 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Oughta Git",
-    "shortDescription": "Create atomic commits and deliver issues through reviewed PRs."
+    "shortDescription": "Prepare logical, atomic, semantic commits with the commit skill."
   }
 }

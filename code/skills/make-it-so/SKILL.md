@@ -24,12 +24,12 @@ Use the stable identifiers below to find skills in the current catalog. Read the
 
 | Skill | When to use it |
 | --- | --- |
-| [`git:commit`](../commit/SKILL.md) | Prepare logical, atomic commits at delivery or an intermediate checkpoint. Explicitly limit its scope to task-owned changes; existing user staging and unrelated work retain their ownership. |
-| [`code:elevate`](https://github.com/depatchedmode/oughta/blob/main/code/skills/elevate/SKILL.md) | Perform a review-only pass in Gate 2 and the two improvement passes in Gate 3. Supply the full issue-related scope and this workflow's stricter gate constraints. |
+| [`git:commit`](https://github.com/depatchedmode/oughta/blob/main/git/skills/commit/SKILL.md) | Prepare logical, atomic commits at delivery or an intermediate checkpoint. Explicitly limit its scope to task-owned changes; existing user staging and unrelated work retain their ownership. |
+| [`code:elevate`](../elevate/SKILL.md) | Perform a review-only pass in Gate 2 and the two improvement passes in Gate 3. Supply the full issue-related scope and this workflow's stricter gate constraints. |
 | [`local-first:local-first-design`](https://github.com/depatchedmode/oughta/blob/main/local-first/skills/local-first-design/SKILL.md) | Plan, implement, and review changes to persistence, offline behavior, synchronization, recovery, or remote-service dependencies in any language. |
 | [`rust:rust-practices`](https://github.com/depatchedmode/oughta/blob/main/rust/skills/rust-practices/SKILL.md) | Implement, review, or restructure Rust, add Rust dependencies, or investigate Rust performance. Read only the applicable sections and use the adopting project's toolchain and policies. |
 
-`git:commit` ships in the same domain plugin. The other skills ship in their respective oughta plugins; packaging does not automatically install them. If one is absent from the catalog, read its source from an available oughta checkout or the linked repository, including any referenced material needed for the task. If required guidance cannot be accessed, record the specific capability gap and unblock needed; do not claim that pass ran. Do not install plugins or change host configuration merely to satisfy routing. Discover additional language/domain skills when the issue calls for them, within the original task's authority.
+`code:elevate` ships in the same domain plugin. The other skills ship in their respective oughta plugins; packaging does not automatically install them. If one is absent from the catalog, read its source from an available oughta checkout or the linked repository, including any referenced material needed for the task. If required guidance cannot be accessed, record the specific capability gap and unblock needed; do not claim that pass ran. Do not install plugins or change host configuration merely to satisfy routing. Discover additional language/domain skills when the issue calls for them, within the original task's authority.
 
 ## Planning checkpoint
 
