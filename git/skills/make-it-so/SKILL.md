@@ -1,9 +1,9 @@
 ---
-name: issue-to-pr
+name: make-it-so
 description: Carry a GitHub issue or implementation specification through evidence-backed acceptance, repeated code review, and behavior-preserving simplification to an opened PR. Use when asked to pursue an issue autonomously through these quality gates, including continuing an interrupted run.
 ---
 
-# Issue to PR
+# Make It So
 
 Pursue the issue until its final revision passes all three gates and an implementation PR is opened. Resolve supported decisions autonomously; interrupt only for material owner judgment or a real blocker. Do not settle for easy wins, shortcuts, partial acceptance, or a plan in place of delivery.
 

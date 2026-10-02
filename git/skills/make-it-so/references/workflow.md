@@ -1,4 +1,4 @@
-# Issue-to-PR workflow
+# Make It So workflow
 
 The agent follows this graph using the pass conditions in [SKILL.md](../SKILL.md). It is a process specification, not an executable state-machine runtime.
 
