@@ -12,6 +12,8 @@ Content is grouped by domain: a language, workflow, or discipline such as `rust`
 rust/
 ├── AGENTS.fragment.md
 ├── references.md
+├── .claude-plugin/
+│   └── plugin.json
 ├── .codex-plugin/
 │   └── plugin.json
 └── skills/
@@ -22,11 +24,11 @@ rust/
 - **`AGENTS.fragment.md`** — project rules to adapt and merge into another repository’s `AGENTS.md`.
 - **`skills/`** — reusable procedures and examples, with one folder per skill.
 - **`references.md`** — shared primary sources and further reading. References used by only one skill can live with that skill.
-- **`.codex-plugin/plugin.json`** — plugin metadata for installing the domain's skills and supporting files through Codex.
+- **`.claude-plugin/plugin.json`** and **`.codex-plugin/plugin.json`** — plugin metadata for installing the domain's skills and supporting files through Claude Code or Codex.
 
-The manifests use Codex's compatibility format, verified with Codex CLI 0.131.0.
+The Codex manifests use Codex's compatibility format, verified with Codex CLI 0.131.0. The Claude Code manifests were verified with `claude plugin validate` and a local install using Claude Code 2.1.283.
 
-The repository's [marketplace catalog](.agents/plugins/marketplace.json) exposes each domain with skills as a separate plugin. The domain folder is the package root, so shared references and fragments travel with its skills and their relative links remain valid.
+The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketplace.json) and [Codex](.agents/plugins/marketplace.json) expose each domain with skills as a separate plugin. The domain folder is the package root, so shared references and fragments travel with its skills and their relative links remain valid.
 
 ## Available guidance
 
@@ -37,6 +39,30 @@ The repository's [marketplace catalog](.agents/plugins/marketplace.json) exposes
 **Git:** [commit skill](git/skills/commit/SKILL.md) for preparing logical, atomic commits from uncommitted work.
 
 **Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
+
+## Install skills through Claude Code
+
+Add the marketplace from GitHub after the catalog and manifests have been committed and pushed to the ref you want to use:
+
+```sh
+claude plugin marketplace add depatchedmode/oughta
+```
+
+For a specific branch or tag, append `#<ref>`, as in `depatchedmode/oughta#main`. To use an existing checkout, including uncommitted packaging changes, add its repository root instead:
+
+```sh
+claude plugin marketplace add /absolute/path/to/oughta
+```
+
+Install the domains you want using the plugin names in the [table below](#install-skills-through-codex), for example:
+
+```sh
+claude plugin install git@oughta
+```
+
+Inside a Claude Code session, `/plugin marketplace add depatchedmode/oughta` and `/plugin install git@oughta` do the same. Start a new session, or run `/reload-plugins`, to load the skills. Skills from a plugin are namespaced by plugin, such as `/git:commit`.
+
+For Git-backed sources, users receive a published change only after its plugin's `version` changes; they then run `claude plugin marketplace update oughta` and `claude plugin update <plugin>@oughta`. A marketplace added from a local checkout loads its plugins in place, so edits apply at the next session. Follow the official Claude Code documentation for [creating](https://code.claude.com/docs/en/plugin-marketplaces) and [hosting](https://code.claude.com/docs/en/plugins/host-marketplace) marketplaces.
 
 ## Install skills through Codex
 
@@ -85,8 +111,4 @@ Preserve the target project’s existing instructions when adopting or updating 
 
 ## Contributing
 
-Keep guidance concise, actionable and grounded in primary sources. Put project requirements in fragments, techniques in skills, and shared citations in domain references. Prefer improving an existing skill before splitting it into separate workflows.
-
-When adding or changing a domain plugin, update its `.codex-plugin/plugin.json` version and metadata, keep all skill dependencies inside the domain folder, and add or update its entry in the marketplace catalog. Keep the installation table above in sync. Plugin packaging does not change a skill's policy or approval boundaries.
-
-See the root [AGENTS.md](AGENTS.md) for instructions on maintaining this repository. Domain fragments are reusable content, not active instructions for working on `oughta`.
+See [CONTRIBUTING.md](CONTRIBUTING.md), including how to package skills for both the Claude Code and Codex marketplaces.
