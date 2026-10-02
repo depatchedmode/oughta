@@ -1,60 +1,69 @@
 # Make It So workflow
 
-The agent follows this graph using the pass conditions in [SKILL.md](../SKILL.md). It is a process specification, not an executable state-machine runtime.
+Follow this graph using the pass conditions in [SKILL.md](../SKILL.md). It is a process specification, not an executable state-machine runtime. Every arrow is a control transition; recording findings and follow-up candidates is a side effect, never a route around the gates.
 
 ```mermaid
 flowchart TD
-    ISSUE[Issue and acceptance criteria] --> PLAN[Inspect spec, repository, and relevant skills<br/>Investigate gaps and plan implementation and verification]
+    START[Issue, resumed run, or changed context] --> SYNC[Reconcile requirements, decisions, deliverable,<br/>tested snapshots, base/head, and evidence]
+    SYNC --> NEXT{Earliest unfinished or invalidated stage?}
+    NEXT -- Planning --> PLAN[Inspect spec, repository, and relevant skills<br/>Plan implementation and accessible verification]
+    NEXT -- Gate 1 --> IMPLEMENT
+    NEXT -- Gate 2 --> REVIEW
+    NEXT -- Gate 3 --> IMPROVE
+    NEXT -- Delivery, all gates current --> PR
     PLAN --> DECISION{Unresolved owner-level decision?}
     DECISION -- Yes --> OWNER[Present evidence, options, and recommendation<br/>Wait for owner decision]
-    OWNER --> PLAN
+    OWNER -- Answer received --> SYNC
     DECISION -- No --> IMPLEMENT
 
     subgraph ACCEPTANCE["Gate 1: Acceptance and practices"]
-        IMPLEMENT[Implement using repository conventions<br/>and relevant language and domain skills] --> VERIFY[Run meaningful acceptance and regression checks<br/>Record evidence for the evaluated revision]
-        VERIFY --> PASS1{All criteria and applicable practices met?}
+        IMPLEMENT[Implement using repository conventions<br/>and relevant language and domain skills] --> VERIFY[Run meaningful acceptance and regression checks<br/>Record effective tested snapshot and evidence]
+        VERIFY --> PASS1{All criteria and applicable practices met<br/>for the intended deliverable?}
         PASS1 -- No, repairable --> IMPLEMENT
     end
 
+    PASS1 -- Essential evidence requires publication --> EARLY[Commit/push and prepare matching verification PR<br/>Use required lifecycle state within existing authority<br/>Obtain current-revision evidence, keeping gates open]
+    EARLY --> VERIFY
     PASS1 -- Yes --> REVIEW
     subgraph REVIEW_GATE["Gate 2: Review and verified triage"]
-        REVIEW[Fresh review of issue-related change] --> TRIAGE[Independently verify findings<br/>Classify necessity, scope, and value]
-        TRIAGE --> ACTION{Necessary fix or worthwhile cheap polish?}
-        TRIAGE -. Valid deferral .-> CATALOG[Catalog follow-up candidates<br/>Do not file them]
+        REVIEW[Fresh review of the full issue-related change<br/>and acceptance evidence] --> TRIAGE[Independently verify and adjudicate findings<br/>Record dispositions and follow-up candidates]
+        TRIAGE --> ACTION{Necessary fix or worthwhile polish?}
         ACTION -- Yes --> FIX[Apply fixes<br/>Reset clean-review count]
-        ACTION -- No --> CLEAN{Two consecutive substantive clean passes<br/>on unchanged content?}
+        ACTION -- No --> CLEAN{Two substantive clean passes<br/>on unchanged content?}
         CLEAN -- No --> REVIEW
     end
 
     FIX --> VERIFY
     CLEAN -- Yes --> IMPROVE
     subgraph QUALITY["Gate 3: Simplification and elevation"]
-        IMPROVE[Run distinct simplification and elevation passes<br/>using code:elevate on the issue-related change<br/>Preserve exact behavior and outputs] --> VALUE{Worthwhile improvement remains?}
-        VALUE -- Yes --> REFACTOR[Apply behavior-preserving improvement<br/>Reset clean-review count]
-        VALUE -- No --> PASS3[All three gates passed for final content]
+        IMPROVE[Run distinct simplification and elevation passes<br/>using code:elevate on the issue-related change<br/>Preserve exact behavior and outputs] --> EDITED{Did either pass change content?}
+        EDITED -- No --> PASS3{Both passes completed with no worthwhile change<br/>and Gates 1 and 2 still current?}
     end
 
-    REFACTOR --> VERIFY
-    IMPROVE -. Correctness defect .-> TRIAGE
-    PASS3 --> PR[Open or update and verify the PR]
-    PR --> CI{Required checks pass<br/>on the PR revision?}
+    EDITED -- Yes, reset review count --> VERIFY
+    PASS3 -- No --> SYNC
+    IMPROVE -- Correctness concern, reopen Gate 2 --> REVIEW
+    PASS3 -- Yes --> PR[Commit remaining task-owned work<br/>Open/update and verify matching PR]
+    PR --> MATCH{Pushed content and relevant base context<br/>match the evaluated deliverable?}
+    MATCH -- No --> SYNC
+    MATCH -- Yes --> CI{Required checks pass<br/>on the current PR/merge revision?}
     CI -- Relevant failure --> IMPLEMENT
     CI -- Pending --> WAIT[Wait for required checks]
     WAIT --> CI
-    CI -- Yes --> HANDOFF[PR, summary, acceptance evidence,<br/>manual checks, and follow-up candidates]
-    CATALOG -. Included at handoff .-> HANDOFF
+    CI -- Yes --> FINAL{Final reconciliation confirms<br/>current head/base, all gates, and required CI?}
+    FINAL -- No --> SYNC
+    FINAL -- Yes --> HANDOFF[Finalize PR for review<br/>Hand back PR, summary, evidence,<br/>manual checks, and follow-up candidates]
 
-    IMPLEMENT -. Owner judgment needed .-> OWNER
-    TRIAGE -. Owner judgment needed .-> OWNER
-    IMPROVE -. Owner judgment needed .-> OWNER
-    PLAN -. Required source or guidance inaccessible .-> BLOCKED
-    REVIEW -. Required guidance blocked or convergence unresolved .-> BLOCKED
-    IMPROVE -. Required guidance blocked or convergence unresolved .-> BLOCKED
-    VERIFY -. Required verification blocked .-> BLOCKED[Preserve unfinished status<br/>Report evidence and the specific unblock needed]
-    PR -. PR creation blocked .-> BLOCKED
-    CI -. Required checks inaccessible .-> BLOCKED
-    CI -. Evidenced external failure .-> BLOCKED
-    WAIT -. External blocker prevents progress .-> BLOCKED
+    IMPLEMENT & TRIAGE & IMPROVE -- Owner judgment needed --> OWNER
+    SYNC & PLAN -- Required source or guidance inaccessible --> BLOCKED
+    REVIEW & IMPROVE -- Required guidance blocked or convergence unresolved --> BLOCKED
+    VERIFY & EARLY -- Required verification blocked --> BLOCKED
+    PR -- PR creation blocked --> BLOCKED
+    CI -- Required checks inaccessible or evidenced external failure --> BLOCKED
+    WAIT -- External blocker prevents progress --> BLOCKED[Preserve unfinished status<br/>Report evidence and the specific unblock needed]
+    BLOCKED -- Unblock supplied --> SYNC
 ```
 
-Any task-content edit or material change to requirements, adopted contracts, or owner decisions invalidates affected evidence and resets the clean-review count. This includes later PR/CI fixes. An owner decision returns to the earliest affected gate. A failed or blocked node never silently becomes a pass. Repeated cycles without progress require diagnosis and, when unresolved, an explicit blocker rather than a false completion.
+The run record carries immutable revision identities, criterion/evidence mapping, decisions, review count, findings, and follow-up candidates across transitions. On reconciliation, retain evidence only when it still applies to the actual deliverable; resume the recorded next action when no stage was invalidated.
+
+Any task-content edit or material requirements/contract/owner-decision change resets the clean-review count, invalidates Gate 3, and renews affected Gate 1 evidence before review. Relevant base/context changes have the same effect. This includes edits made during cleanup, by commit hooks, or after CI failures. A cleanup inspection never counts as a Gate 2 review. Missing, failed, or blocked evidence never becomes a pass. Diagnose repeated cycles; if they cannot be resolved autonomously, report the specific blocker with gates incomplete.
