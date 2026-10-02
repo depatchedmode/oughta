@@ -1,0 +1,9 @@
+{
+  "name": "rust",
+  "version": "0.1.0",
+  "description": "Apply Rust practices for code organization, errors, concurrency, and measured performance.",
+  "author": {
+    "name": "depatchedmode"
+  },
+  "repository": "https://github.com/depatchedmode/oughta"
+}

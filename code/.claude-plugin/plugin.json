@@ -1,0 +1,9 @@
+{
+  "name": "code",
+  "version": "0.2.0",
+  "description": "Deliver issues through acceptance, review, cleanup, and a PR; improve selected code changes.",
+  "author": {
+    "name": "depatchedmode"
+  },
+  "repository": "https://github.com/depatchedmode/oughta"
+}
