@@ -34,7 +34,7 @@ The repository's [marketplace catalog](.agents/plugins/marketplace.json) exposes
 
 **Rust:** [project rules](rust/AGENTS.fragment.md), [practices skill](rust/skills/rust-practices/SKILL.md), and [references](rust/references.md).
 
-**Git:** [commit skill](git/skills/commit/SKILL.md) for preparing logical, atomic commits from uncommitted work.
+**Git:** [commit skill](git/skills/commit/SKILL.md) for preparing logical, atomic commits from uncommitted work, and [issue-to-pr skill](git/skills/issue-to-pr/SKILL.md) for autonomous delivery through acceptance, repeated review, behavior-preserving cleanup, and an opened PR. Its [workflow graph](git/skills/issue-to-pr/references/workflow.md) specifies the process; its [run record](git/skills/issue-to-pr/references/run-record.md) supports interruption and resume. Invocation authorizes ordinary issue implementation and PR delivery within repository permissions; merging, deployment, and filing deferred issues remain separate actions.
 
 **Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
 
@@ -58,7 +58,7 @@ Install the domains you want:
 | Plugin | Skill |
 | --- | --- |
 | `code@oughta` | `elevate` |
-| `git@oughta` | `commit` |
+| `git@oughta` | `commit`, `issue-to-pr` |
 | `local-first@oughta` | `local-first-design` |
 | `rust@oughta` | `rust-practices` |
 
@@ -72,6 +72,8 @@ In the Codex app, add `depatchedmode/oughta` as a marketplace source, then selec
 
 The catalog makes every plugin available for explicit installation. These packages contain skills and supporting guidance; they have no connected services or authentication setup. Installing a plugin does not merge its `AGENTS.fragment.md` into a project's instructions. Adopt those rules explicitly using the procedure below.
 
+For `git:issue-to-pr`, install `code@oughta` for review and its distinct simplification/elevation passes; add `local-first@oughta` or `rust@oughta` when the change calls for their guidance. The skill routes conditionally by stable identifiers and links to repo-owned sources if a companion is unavailable. Cross-domain skills are not bundled or automatically installed. Installing skills alone does not grant issue, push, or PR authorization; invoke the workflow for the intended repository and scope.
+
 For Git-backed sources, refresh the catalog with `codex plugin marketplace upgrade oughta` after publishing changes. Follow the [official Codex plugin packaging documentation](https://developers.openai.com/plugins/build/plugins) for marketplace and installation behavior.
 
 ## Use in a project
@@ -81,12 +83,14 @@ For Git-backed sources, refresh the catalog with `codex plugin marketplace upgra
 3. Copy any shared references it uses. Update relative links in the merged guidance, skill and references to their new locations; the skill folder alone may not include everything it links to.
 4. Verify those links and remove the fragment’s adoption note.
 
+For copied `issue-to-pr` guidance, include `git/skills/commit` alongside it and provide the conditionally used companion skills listed above through supported skill locations or accessible oughta sources. Adapt identifiers and links to the adopting layout; retain the gate and approval boundaries.
+
 Preserve the target project’s existing instructions when adopting or updating guidance.
 
 ## Contributing
 
 Keep guidance concise, actionable and grounded in primary sources. Put project requirements in fragments, techniques in skills, and shared citations in domain references. Prefer improving an existing skill before splitting it into separate workflows.
 
-When adding or changing a domain plugin, update its `.codex-plugin/plugin.json` version and metadata, keep all skill dependencies inside the domain folder, and add or update its entry in the marketplace catalog. Keep the installation table above in sync. Plugin packaging does not change a skill's policy or approval boundaries.
+When adding or changing a domain plugin, update its `.codex-plugin/plugin.json` version and metadata, keep bundled file dependencies inside the domain folder, and add or update its entry in the marketplace catalog when registration changes. Cross-domain skill routing must use stable identifiers and accessible repo-owned sources, with companion installation requirements documented; relative file links must not escape the installed domain. Keep the installation table above in sync. Plugin packaging does not change a skill's policy or approval boundaries.
 
 See the root [AGENTS.md](AGENTS.md) for instructions on maintaining this repository. Domain fragments are reusable content, not active instructions for working on `oughta`.
