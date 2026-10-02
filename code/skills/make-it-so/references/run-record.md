@@ -6,6 +6,7 @@ Use one compact record in an existing task scratch area or another durable locat
 
 - Issue/spec and repository:
 - Immutable head, diff merge base, current target-base revision, and issue-related scope; user/concurrent edits and staging preserved:
+- Complete prospective PR diff and ownership reconciliation, including inherited commits and accepted dependencies; scoped branch if needed:
 - Intended deliverable fingerprint, effective tested snapshots and relevant build inputs, requirements/contract version, and baseline:
 - Relevant repository rules, language/domain skills, and architectural constraints:
 - Owner decisions, supported assumptions, and unresolved questions:
@@ -34,7 +35,7 @@ For each distinct valid deferral, retain a suggested title, observed problem and
 
 ## Delivery
 
-- PR, draft/readiness status, and verified head/target-base/content matching the evaluated deliverable:
+- PR, draft/readiness status, complete diff matching agreed scope, and verified head/target-base/content matching the evaluated deliverable:
 - Final Gate 1 evidence, two clean Gate 2 passes, and no-change Gate 3 pass:
 - Required CI for the current PR/merge revision and lifecycle state, final reconciliation, and material limitations:
 - Manual checks with setup and expected observations:

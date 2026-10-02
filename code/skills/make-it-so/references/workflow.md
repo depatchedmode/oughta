@@ -4,7 +4,7 @@ Follow this graph using the pass conditions in [SKILL.md](../SKILL.md). It is a 
 
 ```mermaid
 flowchart TD
-    START[Issue, resumed run, or changed context] --> SYNC[Reconcile requirements, decisions, deliverable,<br/>tested snapshots, base/head, and evidence]
+    START[Issue, resumed run, or changed context] --> SYNC[Reconcile requirements, decisions, full PR scope/ownership,<br/>deliverable, tested snapshots, base/head, and evidence]
     SYNC --> NEXT{Earliest unfinished or invalidated stage?}
     NEXT -- Planning --> PLAN[Inspect spec, repository, and relevant skills<br/>Plan implementation and accessible verification]
     NEXT -- Gate 1 --> IMPLEMENT
@@ -22,7 +22,7 @@ flowchart TD
         PASS1 -- No, repairable --> IMPLEMENT
     end
 
-    PASS1 -- Essential evidence requires publication --> EARLY[Commit/push and prepare matching verification PR<br/>Use required lifecycle state within existing authority<br/>Obtain current-revision evidence, keeping gates open]
+    PASS1 -- Essential evidence requires publication --> EARLY[Check complete prospective PR scope before publication<br/>Commit/push and prepare matching verification PR<br/>Use required lifecycle state within existing authority<br/>Obtain current-revision evidence, keeping gates open]
     EARLY --> VERIFY
     PASS1 -- Yes --> REVIEW
     subgraph REVIEW_GATE["Gate 2: Review and verified triage"]
@@ -43,8 +43,8 @@ flowchart TD
     EDITED -- Yes, reset review count --> VERIFY
     PASS3 -- No --> SYNC
     IMPROVE -- Correctness concern, reopen Gate 2 --> REVIEW
-    PASS3 -- Yes --> PR[Commit remaining task-owned work<br/>Open/update and verify matching PR]
-    PR --> MATCH{Pushed content and relevant base context<br/>match the evaluated deliverable?}
+    PASS3 -- Yes --> PR[Check complete prospective PR scope before publication<br/>Commit remaining task-owned work<br/>Open/update and verify matching PR]
+    PR --> MATCH{Complete PR scope, pushed content, and relevant base<br/>match the agreed deliverable?}
     MATCH -- No --> SYNC
     MATCH -- Yes --> READY[Finalize PR for review within existing authority<br/>Preserve an already-ready PR's state]
     READY --> CI{Required checks, including lifecycle-triggered checks,<br/>pass on the current PR/merge revision?}
@@ -60,6 +60,7 @@ flowchart TD
     REVIEW & IMPROVE -- Required guidance blocked or convergence unresolved --> BLOCKED
     VERIFY & EARLY -- Required verification blocked --> BLOCKED
     PR & READY -- PR publication or lifecycle change blocked --> BLOCKED
+    EARLY & PR -- Scope mismatch, do not publish --> SYNC
     CI -- Required checks inaccessible or evidenced external failure --> BLOCKED
     WAIT -- External blocker prevents progress --> BLOCKED[Preserve unfinished status<br/>Report evidence and the specific unblock needed]
     BLOCKED -- Unblock supplied --> SYNC
