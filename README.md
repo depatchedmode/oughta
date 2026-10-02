@@ -38,7 +38,7 @@ The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketpla
 
 **Git:** [commit skill](git/skills/commit/SKILL.md) for preparing logical, atomic commits from uncommitted work.
 
-**Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
+**Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff, and [make-it-so skill](code/skills/make-it-so/SKILL.md) for autonomous delivery through acceptance, repeated review, behavior-preserving cleanup, and an opened PR. Its [workflow graph](code/skills/make-it-so/references/workflow.md) specifies the process; its [run record](code/skills/make-it-so/references/run-record.md) supports interruption and resume. Invocation authorizes ordinary issue implementation and PR delivery within repository permissions; merging, deployment, and filing deferred issues remain separate actions.
 
 ## Install skills through Claude Code
 
@@ -83,7 +83,7 @@ Install the domains you want:
 
 | Plugin | Skill |
 | --- | --- |
-| `code@oughta` | `elevate` |
+| `code@oughta` | `elevate`, `make-it-so` |
 | `git@oughta` | `commit` |
 | `local-first@oughta` | `local-first-design` |
 | `rust@oughta` | `rust-practices` |
@@ -98,6 +98,8 @@ In the Codex app, add `depatchedmode/oughta` as a marketplace source, then selec
 
 The catalog makes every plugin available for explicit installation. These packages contain skills and supporting guidance; they have no connected services or authentication setup. Installing a plugin does not merge its `AGENTS.fragment.md` into a project's instructions. Adopt those rules explicitly using the procedure below.
 
+For `code:make-it-so`, `code@oughta` also provides review and distinct simplification/elevation passes through `code:elevate`. Install `git@oughta` for commits; add `local-first@oughta` or `rust@oughta` when the change calls for their guidance. The skill routes conditionally by stable identifiers and links to repo-owned sources if a companion is unavailable. Cross-domain skills are not bundled or automatically installed. Installing skills alone does not grant issue, push, or PR authorization; invoke the workflow for the intended repository and scope.
+
 For Git-backed sources, refresh the catalog with `codex plugin marketplace upgrade oughta` after publishing changes. Follow the [official Codex plugin packaging documentation](https://developers.openai.com/plugins/build/plugins) for marketplace and installation behavior.
 
 ## Use in a project
@@ -106,6 +108,8 @@ For Git-backed sources, refresh the catalog with `codex plugin marketplace upgra
 2. Copy the desired skill folder into the project’s supported skill location.
 3. Copy any shared references it uses. Update relative links in the merged guidance, skill and references to their new locations; the skill folder alone may not include everything it links to.
 4. Verify those links and remove the fragment’s adoption note.
+
+For copied `make-it-so` guidance, include `code/skills/elevate` alongside it and provide `git:commit` and the conditionally used companion skills listed above through supported skill locations or accessible oughta sources. Adapt identifiers and links to the adopting layout; retain the gate and approval boundaries.
 
 Preserve the target project’s existing instructions when adopting or updating guidance.
 

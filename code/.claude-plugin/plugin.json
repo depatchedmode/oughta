@@ -1,7 +1,7 @@
 {
   "name": "code",
-  "version": "0.1.0",
-  "description": "Review and improve selected code changes with the elevate skill.",
+  "version": "0.2.0",
+  "description": "Deliver issues through acceptance, review, cleanup, and a PR; improve selected code changes.",
   "author": {
     "name": "depatchedmode"
   },

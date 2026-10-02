@@ -19,7 +19,7 @@ When you add a domain plugin, or change one's skills, metadata or version, updat
 - Bump `version` in both manifests when you publish a change. Claude Code users with a Git-backed marketplace receive a new copy of a plugin only after its `version` changes.
 - Each `SKILL.md` needs `name` and `description` frontmatter, which both agents use to decide when to load the skill. Write descriptions that do not name a specific agent.
 - A skill may also include `agents/openai.yaml` with Codex display metadata and a default prompt. Claude Code ignores this file.
-- Keep all skill dependencies inside the domain folder. The domain folder is the package root, so links that leave it break in installed copies.
+- Keep bundled file dependencies inside the domain folder. The domain folder is the package root, so relative links that leave it break in installed copies. Cross-domain skill routing must use stable identifiers and accessible repo-owned sources, with companion installation requirements documented.
 - Keep the installation table in the [README](README.md#install-skills-through-codex) in sync.
 
 Plugin packaging does not change a skill's policy or approval boundaries.
