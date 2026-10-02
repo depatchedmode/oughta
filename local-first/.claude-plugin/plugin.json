@@ -1,0 +1,9 @@
+{
+  "name": "local-first",
+  "version": "0.1.0",
+  "description": "Design and review local storage, synchronization, offline operation, and recovery.",
+  "author": {
+    "name": "depatchedmode"
+  },
+  "repository": "https://github.com/depatchedmode/oughta"
+}

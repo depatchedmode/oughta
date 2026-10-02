@@ -1,0 +1,35 @@
+{
+  "name": "oughta",
+  "owner": {
+    "name": "depatchedmode"
+  },
+  "metadata": {
+    "description": "How we oughta do things. Reusable guidance and skills for coding agents."
+  },
+  "plugins": [
+    {
+      "name": "code",
+      "source": "./code",
+      "description": "Review and improve selected code changes with the elevate skill.",
+      "category": "development"
+    },
+    {
+      "name": "git",
+      "source": "./git",
+      "description": "Prepare logical, atomic, semantic commits with the commit skill.",
+      "category": "development"
+    },
+    {
+      "name": "local-first",
+      "source": "./local-first",
+      "description": "Design and review local storage, synchronization, offline operation, and recovery.",
+      "category": "development"
+    },
+    {
+      "name": "rust",
+      "source": "./rust",
+      "description": "Apply Rust practices for code organization, errors, concurrency, and measured performance.",
+      "category": "development"
+    }
+  ]
+}
