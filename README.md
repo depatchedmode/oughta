@@ -111,8 +111,4 @@ Preserve the target project’s existing instructions when adopting or updating 
 
 ## Contributing
 
-Keep guidance concise, actionable and grounded in primary sources. Put project requirements in fragments, techniques in skills, and shared citations in domain references. Prefer improving an existing skill before splitting it into separate workflows.
-
-When adding or changing a domain plugin, update the version and metadata in both its `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json`, keep all skill dependencies inside the domain folder, and add or update its entry in both marketplace catalogs. Keep the installation table above in sync. Plugin packaging does not change a skill's policy or approval boundaries.
-
-See the root [AGENTS.md](AGENTS.md) for instructions on maintaining this repository. Domain fragments are reusable content, not active instructions for working on `oughta`.
+See [CONTRIBUTING.md](CONTRIBUTING.md), including how to package skills for both the Claude Code and Codex marketplaces.
