@@ -36,6 +36,6 @@ For each distinct valid deferral, retain a suggested title, observed problem and
 
 - PR, draft/readiness status, and verified head/target-base/content matching the evaluated deliverable:
 - Final Gate 1 evidence, two clean Gate 2 passes, and no-change Gate 3 pass:
-- Required CI for the current PR/merge revision, final reconciliation, and material limitations:
+- Required CI for the current PR/merge revision and lifecycle state, final reconciliation, and material limitations:
 - Manual checks with setup and expected observations:
 - Handoff summary and follow-up candidates:

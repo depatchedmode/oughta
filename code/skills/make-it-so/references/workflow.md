@@ -46,19 +46,20 @@ flowchart TD
     PASS3 -- Yes --> PR[Commit remaining task-owned work<br/>Open/update and verify matching PR]
     PR --> MATCH{Pushed content and relevant base context<br/>match the evaluated deliverable?}
     MATCH -- No --> SYNC
-    MATCH -- Yes --> CI{Required checks pass<br/>on the current PR/merge revision?}
+    MATCH -- Yes --> READY[Finalize PR for review within existing authority<br/>Preserve an already-ready PR's state]
+    READY --> CI{Required checks, including lifecycle-triggered checks,<br/>pass on the current PR/merge revision?}
     CI -- Relevant failure --> IMPLEMENT
     CI -- Pending --> WAIT[Wait for required checks]
     WAIT --> CI
-    CI -- Yes --> FINAL{Final reconciliation confirms<br/>current head/base, all gates, and required CI?}
+    CI -- Yes --> FINAL{Final reconciliation confirms current<br/>head/base/lifecycle state, all gates, and required CI?}
     FINAL -- No --> SYNC
-    FINAL -- Yes --> HANDOFF[Finalize PR for review<br/>Hand back PR, summary, evidence,<br/>manual checks, and follow-up candidates]
+    FINAL -- Yes --> HANDOFF[Hand back PR, summary, evidence,<br/>manual checks, and follow-up candidates]
 
     IMPLEMENT & TRIAGE & IMPROVE -- Owner judgment needed --> OWNER
     SYNC & PLAN -- Required source or guidance inaccessible --> BLOCKED
     REVIEW & IMPROVE -- Required guidance blocked or convergence unresolved --> BLOCKED
     VERIFY & EARLY -- Required verification blocked --> BLOCKED
-    PR -- PR creation blocked --> BLOCKED
+    PR & READY -- PR publication or lifecycle change blocked --> BLOCKED
     CI -- Required checks inaccessible or evidenced external failure --> BLOCKED
     WAIT -- External blocker prevents progress --> BLOCKED[Preserve unfinished status<br/>Report evidence and the specific unblock needed]
     BLOCKED -- Unblock supplied --> SYNC
