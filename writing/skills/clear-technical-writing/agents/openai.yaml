@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clear Technical Writing"
+  short_description: "Clarify technical prose without losing meaning"
+  default_prompt: "Use $clear-technical-writing to revise this technical text for its intended reader while preserving its meaning and voice."

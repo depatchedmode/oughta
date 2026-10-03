@@ -30,6 +30,12 @@
       "source": "./rust",
       "description": "Apply Rust practices for code organization, errors, concurrency, and measured performance.",
       "category": "development"
+    },
+    {
+      "name": "writing",
+      "source": "./writing",
+      "description": "Draft and revise clear technical prose while preserving meaning and voice.",
+      "category": "productivity"
     }
   ]
 }
