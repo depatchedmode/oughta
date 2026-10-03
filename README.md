@@ -40,6 +40,8 @@ The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketpla
 
 **Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
 
+**Writing:** [clear technical writing skill](writing/skills/clear-technical-writing/SKILL.md) for accurate, readable technical prose, and [copyable agent instructions](writing/AGENTS.fragment.md) for plugin installs or repository-local skills. Uses STE-inspired clarity while preserving meaning and voice; does not establish formal ASD-STE100 compliance.
+
 ## Install skills through Claude Code
 
 Add the marketplace from GitHub after the catalog and manifests have been committed and pushed to the ref you want to use:
@@ -87,6 +89,7 @@ Install the domains you want:
 | `git@oughta` | `commit` |
 | `local-first@oughta` | `local-first-design` |
 | `rust@oughta` | `rust-practices` |
+| `writing@oughta` | `clear-technical-writing` |
 
 For example:
 

@@ -1,0 +1,14 @@
+{
+  "name": "writing",
+  "version": "0.1.0",
+  "description": "Draft and revise clear technical prose while preserving meaning and voice.",
+  "author": {
+    "name": "depatchedmode"
+  },
+  "repository": "https://github.com/depatchedmode/oughta",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Oughta Writing",
+    "shortDescription": "Draft and revise clear technical prose while preserving meaning and voice."
+  }
+}
