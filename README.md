@@ -38,7 +38,7 @@ The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketpla
 
 **Git:** [commit skill](git/skills/commit/SKILL.md) for preparing logical, atomic commits from uncommitted work.
 
-**Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff, and [make-it-so skill](code/skills/make-it-so/SKILL.md) for autonomous delivery through acceptance, repeated review, behavior-preserving cleanup, and an opened PR. Its [workflow graph](code/skills/make-it-so/references/workflow.md) specifies the process; its [run record](code/skills/make-it-so/references/run-record.md) supports interruption and resume. Invocation authorizes ordinary issue implementation and PR delivery within repository permissions; merging, deployment, and filing deferred issues remain separate actions.
+**Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff, and [make-it-so skill](code/skills/make-it-so/SKILL.md) for autonomous delivery through acceptance, behavior-preserving cleanup, repeated review, and an opened PR. Its [workflow graph](code/skills/make-it-so/SKILL.md#workflow-graph) specifies the process; its [run record](code/skills/make-it-so/references/run-record.md) supports interruption and resume. Invocation authorizes ordinary issue implementation and PR delivery within repository permissions; merging, deployment, filing follow-up issues, and messaging people remain separate actions.
 
 ## Install skills through Claude Code
 

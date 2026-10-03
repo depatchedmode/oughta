@@ -1,0 +1,3 @@
+# Model and effort
+
+When the user permits per-stage model or effort tuning, a starting policy is the same capable model throughout, the highest available effort for planning, review, difficult implementation, and substantial refactors, and a high, below-maximum effort for routine implementation, test development, and simplification. This is a configurable starting point, not a proven optimum or a reason to downgrade an explicit higher selection. If the needed controls are unavailable, keep the active settings and mention it only when relevant. Evidence and gate requirements do not change with model choice.
