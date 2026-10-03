@@ -1,32 +1,60 @@
 # Run record template
 
-Use one compact record in an existing task scratch area or another durable location outside the production diff. Fill only the fields useful to this run. Update at gate transitions and before interruption; preserve enough evidence to resume without treating old results as current.
+Use one compact record at the location chosen under [Scope, authority, and continuity](../SKILL.md#scope-authority-and-continuity-start-sync). Update the status header when SKILL.md directs; fill other fields only when useful to this run. Preserve enough evidence to resume without treating old results as current. The sections after Fingerprint form the record.
+
+## Fingerprint
+
+Compute the deliverable fingerprint from task-owned paths without touching the real index. Separate files with mixed ownership, or resolve them under [Scope](../SKILL.md#scope-authority-and-continuity-start-sync), first.
+
+```sh
+(
+  tmp=$(mktemp -d) || exit
+  trap 'rm -rf "$tmp"' EXIT
+  export GIT_INDEX_FILE="$tmp/index"
+  git read-tree HEAD &&
+  git add -A -- <task-owned paths> &&
+  git write-tree   # prints the fingerprint
+)
+```
+
+A failed step prints no fingerprint; reconcile the task-owned path list, as at `SYNC`, and rerun, dropping paths that exist in neither `HEAD` nor the worktree after a deletion or rename is committed. Never run it with an empty list, which would stage the whole worktree; with no task-owned paths, the fingerprint is `HEAD^{tree}`.
+
+Record it, with the target-base revision and requirements/contract/decision version, in the status header and with each check, Gate 2 round, and Gate 3 pass.
+
+## Status
+
+- Branch and worktree that own this run:
+- Node (graph ID) and next action:
+- Blocker or pending owner decision, if any:
+- Target-base, merge-base, and head revisions; task-owned paths; deliverable fingerprint:
+- Requirements/contract version and owner decisions in force:
+- Gate currency (planning, Gate 1, Gate 2, Gate 3 clean-review count under the current fingerprint, base, and requirements); stall in effect:
+- Fingerprint of the last no-change Gate 2 round, and each later content change with its origin (`TRIAGE` fix, Gate 1 repair needed by a `TRIAGE` fix and not entered from `CI`, CI-entered change, or other):
+- PR, head being checked, and lifecycle state:
 
 ## Context and plan
 
 - Issue/spec and repository:
-- Immutable head, diff merge base, current target-base revision, and issue-related scope; user/concurrent edits and staging preserved:
+- Issue-related scope; user/concurrent edits and staging preserved:
 - Complete prospective PR diff and ownership reconciliation, including inherited commits and accepted dependencies; scoped branch if needed:
-- Intended deliverable fingerprint, effective tested snapshots and relevant build inputs, requirements/contract version, and baseline:
+- Effective tested snapshots, relevant build inputs, and baseline:
 - Relevant repository rules, language/domain skills, and architectural constraints:
-- Owner decisions, supported assumptions, and unresolved questions:
+- Supported assumptions and unresolved questions:
 - Implementation steps and verification-environment dependencies, including any PR needed to obtain evidence:
-- Active gate, current blocker if any, and next action:
 
 ## Acceptance evidence
 
 | Criterion or required practice | Observable pass condition | Test/check and environment | Expected and observed result; evidence location | Effective tested snapshot; applicability to deliverable |
 | --- | --- | --- | --- | --- |
 
-Keep baseline failures and verification gaps explicit. A criterion with missing required evidence remains incomplete. If preserved local work participates in a check, account for its effect or verify the isolated deliverable. A matching task diff alone does not establish matching tested behavior.
+Keep baseline failures, owner-accepted target-base failures, and verification gaps explicit.
 
-## Review and improvement
+## Cleanup and review
 
-- Clean-review count and current content identity:
-- Each review pass: scope/context, primary risk lens, what was independently examined, findings, and adjudicated result:
-- Each distinct simplification and elevation pass: skill/source applied, concrete benefit or reason for no change, behavior-preservation evidence, and resulting gate invalidation:
+- Each Gate 2 round: skill/source applied, simplification and elevation outcomes recorded separately, fingerprint, concrete benefit or reason for no change, and behavior-preservation evidence:
+- Each Gate 3 pass: fingerprint, instrument, primary risk lens, scope/context, what was independently examined, findings, and clean or not clean:
 
-| Finding | Verification evidence and impact | Necessity and scope | Disposition and rationale | Fix or follow-up reference |
+| Finding | Verification evidence and impact | Necessity and scope | Disposition and rationale (cycle or stall rule if applied) | Fix or follow-up reference |
 | --- | --- | --- | --- | --- |
 
 ## Follow-up candidates
@@ -35,8 +63,8 @@ For each distinct valid deferral, retain a suggested title, observed problem and
 
 ## Delivery
 
-- PR, draft/readiness status, complete diff matching agreed scope, and verified head/target-base/content matching the evaluated deliverable:
-- Final Gate 1 evidence, two clean Gate 2 passes, and no-change Gate 3 pass:
-- Required CI for the current PR/merge revision and lifecycle state, final reconciliation, and material limitations:
+- PR, draft/readiness status, complete diff matching agreed scope, and pushed tree matching the fingerprint at verified head/target-base:
+- Final Gate 1 evidence, the Gate 3 clean-review count and its passes for the delivered fingerprint, and the no-change Gate 2 round that keeps Gate 2 current:
+- Required CI for the current PR/merge revision and lifecycle state (or verified absence of required checks), owner-accepted target-base failures, final reconciliation, and material limitations:
 - Manual checks with setup and expected observations:
 - Handoff summary and follow-up candidates:
