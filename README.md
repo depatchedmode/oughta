@@ -40,6 +40,8 @@ The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketpla
 
 **Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
 
+**Planning:** [sharpen-plan skill](planning/skills/sharpen-plan/SKILL.md) for deepening an existing plan or task prompt with primary evidence, professional methods, and independent validation without expanding scope.
+
 ## Install skills through Claude Code
 
 Add the marketplace from GitHub after the catalog and manifests have been committed and pushed to the ref you want to use:
@@ -86,6 +88,7 @@ Install the domains you want:
 | `code@oughta` | `elevate` |
 | `git@oughta` | `commit` |
 | `local-first@oughta` | `local-first-design` |
+| `planning@oughta` | `sharpen-plan` |
 | `rust@oughta` | `rust-practices` |
 
 For example:

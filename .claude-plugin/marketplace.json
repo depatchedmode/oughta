@@ -26,6 +26,12 @@
       "category": "development"
     },
     {
+      "name": "planning",
+      "source": "./planning",
+      "description": "Sharpen existing plans and task prompts with primary evidence, professional methods, and independent validation.",
+      "category": "development"
+    },
+    {
       "name": "rust",
       "source": "./rust",
       "description": "Apply Rust practices for code organization, errors, concurrency, and measured performance.",

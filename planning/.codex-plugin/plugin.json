@@ -1,0 +1,14 @@
+{
+  "name": "planning",
+  "version": "0.1.0",
+  "description": "Sharpen existing plans and task prompts with primary evidence, professional methods, and independent validation.",
+  "author": {
+    "name": "depatchedmode"
+  },
+  "repository": "https://github.com/depatchedmode/oughta",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Oughta Planning",
+    "shortDescription": "Sharpen existing plans and task prompts with primary evidence, professional methods, and independent validation."
+  }
+}
