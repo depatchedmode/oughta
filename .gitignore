@@ -1,0 +1,4 @@
+# Claude Code local state and personal instructions
+.claude/worktrees/
+.claude/settings.local.json
+CLAUDE.local.md
