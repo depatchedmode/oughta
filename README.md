@@ -40,6 +40,8 @@ The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketpla
 
 **Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
 
+**UX:** [references](ux/references.md), including the recommended way to run developer-skill-pack's UX review skills on an app.
+
 ## Install skills through Claude Code
 
 Add the marketplace from GitHub after the catalog and manifests have been committed and pushed to the ref you want to use:
