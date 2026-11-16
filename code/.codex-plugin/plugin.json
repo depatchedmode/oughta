@@ -1,7 +1,7 @@
 {
   "name": "code",
-  "version": "0.1.0",
-  "description": "Review and improve selected code changes with the elevate skill.",
+  "version": "0.2.0",
+  "description": "Improve selected diffs with elevate and untangle codebases with verified structural refactoring.",
   "author": {
     "name": "depatchedmode"
   },
@@ -9,6 +9,6 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Oughta Code",
-    "shortDescription": "Review and improve selected code changes with the elevate skill."
+    "shortDescription": "Improve diffs and untangle codebase structure."
   }
 }

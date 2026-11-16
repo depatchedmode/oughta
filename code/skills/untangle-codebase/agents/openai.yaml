@@ -1,0 +1,6 @@
+interface:
+  display_name: "Untangle Codebase"
+  short_description: "Refactor ownership and contracts with verified outcomes"
+  default_prompt: "Use $untangle-codebase to thoroughly refactor the specified area and verify its behavior."
+policy:
+  allow_implicit_invocation: false

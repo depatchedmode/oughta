@@ -38,7 +38,7 @@ The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketpla
 
 **Git:** [commit skill](git/skills/commit/SKILL.md) for preparing logical, atomic commits from uncommitted work.
 
-**Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
+**Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff; [untangle-codebase](code/skills/untangle-codebase/SKILL.md) for thorough structural refactoring of a repository, subsystem, or PR, with [readiness guidance](code/skills/untangle-codebase/references/readiness.md) and a [decision-log template](code/skills/untangle-codebase/references/decision-log.md). See its [usage and source attribution](code/skills/untangle-codebase/README.md).
 
 **UX:** [references](ux/references.md), including the recommended way to run developer-skill-pack's UX review skills on an app.
 
@@ -85,7 +85,7 @@ Install the domains you want:
 
 | Plugin | Skill |
 | --- | --- |
-| `code@oughta` | `elevate` |
+| `code@oughta` | `elevate`, `untangle-codebase` |
 | `git@oughta` | `commit` |
 | `local-first@oughta` | `local-first-design` |
 | `rust@oughta` | `rust-practices` |

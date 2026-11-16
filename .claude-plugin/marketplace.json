@@ -10,7 +10,7 @@
     {
       "name": "code",
       "source": "./code",
-      "description": "Review and improve selected code changes with the elevate skill.",
+      "description": "Improve selected diffs with elevate and untangle codebases with verified structural refactoring.",
       "category": "development"
     },
     {
