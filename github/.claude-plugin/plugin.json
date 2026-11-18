@@ -1,0 +1,9 @@
+{
+  "name": "github",
+  "version": "0.1.0",
+  "description": "Audit GitHub issues and organize labels, milestones, and issue forms.",
+  "author": {
+    "name": "depatchedmode"
+  },
+  "repository": "https://github.com/depatchedmode/oughta"
+}
