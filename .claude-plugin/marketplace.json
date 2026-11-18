@@ -20,6 +20,12 @@
       "category": "development"
     },
     {
+      "name": "github",
+      "source": "./github",
+      "description": "Audit GitHub issues and organize labels, milestones, and issue forms.",
+      "category": "development"
+    },
+    {
       "name": "local-first",
       "source": "./local-first",
       "description": "Design and review local storage, synchronization, offline operation, and recovery.",

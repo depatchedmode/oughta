@@ -38,6 +38,8 @@ The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketpla
 
 **Git:** [commit skill](git/skills/commit/SKILL.md) for preparing logical, atomic commits from uncommitted work.
 
+**GitHub:** [backlog triage skill](github/skills/github-backlog-triage/SKILL.md) for reviewing open issues and applying agreed changes to labels, milestones, issue bodies, and templates.
+
 **Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
 
 **UX:** [references](ux/references.md), including the recommended way to run developer-skill-pack's UX review skills on an app.
@@ -87,6 +89,7 @@ Install the domains you want:
 | --- | --- |
 | `code@oughta` | `elevate` |
 | `git@oughta` | `commit` |
+| `github@oughta` | `github-backlog-triage` |
 | `local-first@oughta` | `local-first-design` |
 | `rust@oughta` | `rust-practices` |
 
