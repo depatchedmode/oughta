@@ -32,6 +32,8 @@ The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketpla
 
 ## Available guidance
 
+**Agents:** [runtime defaults](agents/defaults.md) for Codex subagents, interactive agents, and Claude Code.
+
 **Local-first:** [project rules](local-first/AGENTS.fragment.md), [design skill](local-first/skills/local-first-design/SKILL.md), and [references](local-first/references.md). Use alongside language-specific guidance when designing storage, synchronization, or service dependencies.
 
 **Rust:** [project rules](rust/AGENTS.fragment.md), [practices skill](rust/skills/rust-practices/SKILL.md), and [references](rust/references.md).
