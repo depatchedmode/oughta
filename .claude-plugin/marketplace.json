@@ -14,6 +14,12 @@
       "category": "development"
     },
     {
+      "name": "communication",
+      "source": "./communication",
+      "description": "Make narrated video walkthroughs of pull requests, features and systems from real command output, narrated locally.",
+      "category": "development"
+    },
+    {
       "name": "git",
       "source": "./git",
       "description": "Prepare logical, atomic, semantic commits with the commit skill.",

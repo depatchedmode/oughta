@@ -1,0 +1,228 @@
+/* Base layer, always loaded first: tokens with default values, then every component's structure.
+   A theme changes the look by overriding tokens (theme.json "tokens") and, if it must, CSS. */
+
+:root {
+  /* Canvas: 1080p, fixed by the build (not a theme token to change). Everything is laid out in CSS pixels at this size. */
+  --canvas-w: 1920px;
+  --canvas-h: 1080px;
+  --pad-x: 110px;
+  --pad-top: 84px;
+  --pad-bottom: 96px;
+  --gap: 32px;
+
+  /* Type */
+  --font-sans: -apple-system, "SF Pro Display", "Inter", "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", Menlo, monospace;
+  --size-kicker: 26px;
+  --size-title: 58px;
+  --size-hero: 84px;
+  --size-lede: 36px;
+  --size-body: 30px;
+  --size-note: 27px;
+  --size-small: 21px;
+  --size-code: 24px;
+  --size-code-min: 15px;
+  --size-foot: 20px;
+
+  /* Shape */
+  --radius-lg: 16px;
+  --radius: 12px;
+  --radius-sm: 6px;
+}
+
+/* Default colours (the midnight look). Themes override these tokens. */
+:root {
+  --bg: #0f1218;
+  --bg-glow: #1d2a44;
+  --surface: #151b28;
+  --surface-sunk: #0a0d12;
+  --surface-bar: #161b26;
+  --border: #273044;
+  --border-strong: #2a3450;
+  --text: #e8ecf3;
+  --text-strong: #ffffff;
+  --text-muted: #cfd6e3;
+  --text-subtle: #97a3b8;
+  --text-faint: #5f6b80;
+  --code-text: #d6e2ff;
+  --code-inline: #b9cdfd;
+  --code-inline-bg: #1b2130;
+  --accent: #7aa2ff;
+  --ok: #3ccf8e;
+  --warn: #f5b84a;
+  --bad: #ff7a6b;
+  --neutral: #8b96ab;
+  --line-highlight: rgba(122, 162, 255, 0.16);
+  --mark: #ff5f8f;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+/* Slide layouts and components. Values come from the tokens above; don't hard-code colours here. */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: var(--canvas-w); height: var(--canvas-h); overflow: hidden; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+
+/* ---- slide frame ---------------------------------------------------------------------------- */
+.slide {
+  position: absolute; inset: 0;
+  padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+  display: flex; flex-direction: column; gap: var(--gap);
+  background: radial-gradient(1200px 600px at 85% -10%, var(--bg-glow) 0%, transparent 60%), var(--bg);
+}
+.kicker {
+  font-size: var(--size-kicker); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.slide h1.title { font-size: var(--size-title); line-height: 1.12; font-weight: 700; max-width: 1640px; text-wrap: balance; color: var(--text-strong); }
+.content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 28px; overflow: hidden; }
+.foot {
+  position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 34px;
+  display: flex; justify-content: space-between; font-size: var(--size-foot); color: var(--text-faint);
+}
+
+/* title layout: the opening slide */
+.slide.layout-title { justify-content: center; gap: 40px; }
+.slide.layout-title h1.title { font-size: var(--size-hero); line-height: 1.05; max-width: 1500px; }
+.slide.layout-title .content { flex: 0 0 auto; }
+
+/* section layout: a divider between parts */
+.slide.layout-section { justify-content: center; }
+.slide.layout-section h1.title { font-size: var(--size-hero); }
+.slide.layout-section .content { flex: 0 0 auto; }
+
+/* title/section wrapper: only themes that want a panel behind the title give it a box */
+.hero-box { display: contents; }
+/* the line under a title or section title: the slide's marquee or kicker (a PR number, say) */
+.marquee { font-size: var(--size-small); letter-spacing: .06em; color: var(--text-faint); }
+
+/* A theme's decor (decor.mjs): a frame drawn on every slide and art behind title and section
+   slides, both under the content. The footer is positioned already, so it is left alone. */
+.frame, .hero-art { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.slide:has(> .frame, > .hero-art) > :not(.frame):not(.hero-art):not(.foot) { position: relative; z-index: 1; }
+
+/* ---- step reveals ----------------------------------------------------------------------------- */
+/* Hidden steps keep their space, so nothing moves when they appear. */
+[data-step].is-hidden { visibility: hidden; }
+.focus-past [data-step].is-past { opacity: .42; }
+
+/* ---- text ------------------------------------------------------------------------------------- */
+.lede { font-size: var(--size-lede); line-height: 1.45; color: var(--text-muted); max-width: 1500px; }
+.note { font-size: var(--size-note); line-height: 1.45; color: var(--text-subtle); max-width: 1650px; }
+.content b, .content strong { color: var(--text-strong); font-weight: 650; }
+code {
+  font-family: var(--font-mono); font-size: .86em; background: var(--code-inline-bg);
+  border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1px 8px; color: var(--code-inline);
+  white-space: nowrap;
+}
+kbd {
+  font-family: var(--font-mono); font-size: .82em; padding: 2px 10px; border-radius: 8px;
+  border: 1px solid var(--border-strong); border-bottom-width: 3px; background: var(--surface); color: var(--text-strong);
+}
+
+ul.bullets { list-style: none; display: flex; flex-direction: column; gap: 22px; }
+ul.bullets li { font-size: var(--size-body); line-height: 1.38; padding-left: 34px; position: relative; color: var(--text-muted); }
+ul.bullets li::before {
+  content: ""; position: absolute; left: 0; top: .5em; width: 12px; height: 12px; border-radius: 3px; background: var(--accent);
+}
+
+/* ---- layout helpers --------------------------------------------------------------------------- */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; min-height: 0; }
+.stack { display: flex; flex-direction: column; gap: 28px; min-height: 0; }
+
+/* ---- panels: terminal and code ---------------------------------------------------------------- */
+.panel {
+  background: var(--surface-sunk); border: 1px solid var(--border); border-radius: 14px;
+  overflow: hidden; box-shadow: var(--shadow); min-height: 0; min-width: 0; display: flex; flex-direction: column;
+}
+.panel .bar {
+  flex: none; height: 46px; display: flex; align-items: center; gap: 9px; padding: 0 18px;
+  background: var(--surface-bar); border-bottom: 1px solid var(--border); min-width: 0;
+}
+.panel .dot { flex: none; width: 13px; height: 13px; border-radius: 50%; background: #ff5f57; }
+.panel .dot:nth-child(2) { background: #febc2e; }
+.panel .dot:nth-child(3) { background: #28c840; }
+/* One line, always: a long title is cut with an ellipsis and the check reports it. */
+.panel .bar .title {
+  font-style: normal; color: var(--neutral); font-size: 18px; margin-left: 14px; font-family: var(--font-mono);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.panel.code .bar .title { margin-left: 0; }
+/* Never soft-wrap captured output: wrapping breaks tokens mid-way. Long lines shrink the font instead
+   (data-fit), and the check fails if they still don't fit. */
+.panel pre {
+  padding: 22px 26px; font-family: var(--font-mono); line-height: 1.5; color: var(--code-text);
+  white-space: pre; overflow: hidden; font-size: var(--size-code); min-height: 0;
+}
+.panel pre .line { display: block; }
+/* Opt-in wrapping: break at spaces and punctuation only, continuation lines indented. */
+.panel pre.wrap { white-space: pre-wrap; overflow-wrap: break-word; }
+.panel pre.wrap .line { padding-left: 3ch; text-indent: -3ch; }
+.panel pre .line.hl {
+  background: linear-gradient(var(--line-highlight), var(--line-highlight)) no-repeat; background-size: 100% 100%;
+  box-shadow: inset 4px 0 0 var(--accent); margin: 0 -26px; padding: 0 26px;
+}
+.panel pre .caret { color: var(--accent); }
+.panel pre .line.dim { opacity: .45; }
+.panel pre .prompt { color: var(--accent); }
+
+/* ---- flow: a row of steps --------------------------------------------------------------------- */
+.flow { display: flex; align-items: stretch; gap: 14px; }
+.flow .node {
+  flex: 1; background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius);
+  padding: 18px; font-size: 25px; font-weight: 600; display: flex; flex-direction: column; gap: 6px; min-width: 0;
+}
+.flow .node small { font-size: 19px; font-weight: 400; color: var(--text-subtle); }
+.flow .node.is-accent { border-color: var(--accent); }
+.flow .arrow { align-self: center; font-size: 34px; color: var(--accent); }
+
+/* ---- cards ------------------------------------------------------------------------------------ */
+.cards { display: grid; gap: 26px; }
+.card {
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-lg);
+  padding: 30px; border-top: 6px solid var(--tone, var(--accent)); min-width: 0;
+}
+.card h3 { font-size: 36px; margin-bottom: 14px; color: var(--text-strong); }
+.card h3.mono { font-family: var(--font-mono); }
+.card p { font-size: 26px; line-height: 1.42; color: var(--text-muted); }
+
+/* ---- callout ---------------------------------------------------------------------------------- */
+.callout {
+  background: var(--surface); border: 1px solid var(--border-strong); border-left: 6px solid var(--tone, var(--accent));
+  border-radius: var(--radius-lg); padding: 30px 34px; display: flex; flex-direction: column; gap: 18px;
+}
+.callout h3 { font-size: 28px; color: var(--tone, var(--accent)); text-transform: uppercase; letter-spacing: .06em; }
+.callout p { font-size: 28px; line-height: 1.45; color: var(--text-muted); }
+
+/* tones shared by cards, callouts and marks */
+.tone-accent { --tone: var(--accent); }
+.tone-ok { --tone: var(--ok); }
+.tone-warn { --tone: var(--warn); }
+.tone-bad { --tone: var(--bad); }
+.tone-neutral { --tone: var(--neutral); }
+
+/* ---- stat row --------------------------------------------------------------------------------- */
+.stats { display: grid; gap: 26px; }
+.stat { background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: 28px 30px; }
+/* a figure never wraps mid-value: if it doesn't fit, the overflow check fails the build */
+.stat .value { font-size: 72px; font-weight: 700; line-height: 1; white-space: nowrap; color: var(--tone, var(--text-strong)); font-variant-numeric: tabular-nums; }
+.stat .label { margin-top: 14px; font-size: 24px; line-height: 1.35; color: var(--text-subtle); }
+
+/* ---- image (screenshot in a browser-style frame) ---------------------------------------------- */
+.shot { min-height: 0; display: flex; flex-direction: column; }
+.shot .panel { flex: 1; }
+.shot img { display: block; width: 100%; min-height: 0; flex: 1; object-fit: contain; object-position: top left; background: #fff; }
+.shot figcaption { margin-top: 14px; font-size: var(--size-small); color: var(--text-subtle); }
+
+/* ---- mark: ring + caption on whatever the narration points at ---------------------------------- */
+.mark { position: relative; display: inline-block; outline: 4px solid var(--tone, var(--mark)); outline-offset: 3px; border-radius: 8px; margin: 0 .3em; }
+.mark.block { display: block; margin: 0; outline-offset: 8px; }
+.mark > .mark-caption {
+  position: absolute; left: -10px; bottom: calc(100% + 16px); white-space: nowrap;
+  background: var(--tone, var(--mark)); color: #fff; font: 600 22px/1.25 var(--font-sans);
+  padding: 8px 14px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0, 0, 0, .3); z-index: 5;
+}
+.mark.caption-below > .mark-caption { bottom: auto; top: calc(100% + 16px); }
+
+/* ---- media slide: a full-frame recording or screenshot ---------------------------------------- */
+.slide.layout-media { padding: 0; background: var(--bg); }

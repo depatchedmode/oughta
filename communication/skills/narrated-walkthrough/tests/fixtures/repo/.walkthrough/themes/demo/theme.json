@@ -1,0 +1,5 @@
+{
+  "description": "Test fixture: a theme with decor (a frame with a tracker, and hero art that draws in).",
+  "extends": "paper",
+  "brand": { "name": "Demo" }
+}

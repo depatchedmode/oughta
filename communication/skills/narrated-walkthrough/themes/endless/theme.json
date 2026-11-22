@@ -1,0 +1,74 @@
+{
+  "description": "Endless Limited house style (endless.limited): greyscale with film grain, title and section slides on stills of the site's Unicorn Studio shader, DM Sans for all text (Black uppercase titles), DM Mono for code, no labels above titles, tints instead of colour strips.",
+  "extends": "midnight",
+  "fonts": [
+    {
+      "family": "DM Sans",
+      "src": "fonts/dm-sans-latin-wght-normal.woff2",
+      "weight": "100 1000"
+    },
+    {
+      "family": "DM Sans",
+      "src": "fonts/dm-sans-latin-wght-italic.woff2",
+      "weight": "100 1000",
+      "style": "italic"
+    },
+    {
+      "family": "DM Mono",
+      "src": "fonts/dm-mono-latin-400-normal.woff2",
+      "weight": "400"
+    },
+    {
+      "family": "DM Mono",
+      "src": "fonts/dm-mono-latin-500-normal.woff2",
+      "weight": "500"
+    },
+    {
+      "family": "DM Mono",
+      "src": "fonts/dm-mono-latin-400-italic.woff2",
+      "weight": "400",
+      "style": "italic"
+    }
+  ],
+  "tokens": {
+    "font-sans": "\"DM Sans\", \"Helvetica Neue\", Arial, sans-serif",
+    "font-display": "var(--font-sans)",
+    "font-lede": "var(--font-sans)",
+    "font-mono": "\"DM Mono\", \"SF Mono\", Menlo, monospace",
+    "size-hero": "78px",
+    "radius-lg": "2px",
+    "radius": "2px",
+    "radius-sm": "1px",
+    "bg": "#d6d6d4",
+    "bg-glow": "#f4f4f2",
+    "surface": "#ffffff",
+    "surface-sunk": "#0d0d0d",
+    "surface-bar": "#1b1b1b",
+    "border": "#a9a9a7",
+    "border-strong": "#111111",
+    "text": "#141414",
+    "text-strong": "#000000",
+    "text-muted": "#2a2a2a",
+    "text-subtle": "#4e4e4e",
+    "text-faint": "#6e6e6c",
+    "code-text": "#ecece8",
+    "code-inline": "#000000",
+    "code-inline-bg": "#ffffff",
+    "accent": "#000000",
+    "ok": "#2d7b44",
+    "ok-tint": "#cafcd3",
+    "warn": "#846228",
+    "warn-tint": "#fbead1",
+    "bad": "#b6322b",
+    "bad-tint": "#fbe8e5",
+    "neutral": "#696967",
+    "neutral-tint": "#ededeb",
+    "line-highlight": "rgba(255, 255, 255, 0.13)",
+    "mark": "#000000",
+    "shadow": "0 0 2px rgba(0, 0, 0, 0.5), 0 22px 50px rgba(0, 0, 0, 0.22)",
+    "size-note": "26px"
+  },
+  "options": {
+    "marquee": true
+  }
+}

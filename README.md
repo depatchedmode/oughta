@@ -42,6 +42,8 @@ The repository's marketplace catalogs for [Claude Code](.claude-plugin/marketpla
 
 **GitHub:** [backlog triage skill](github/skills/github-backlog-triage/SKILL.md) for reviewing open issues and applying agreed changes to labels, milestones, issue bodies, and templates.
 
+**Communication:** [narrated walkthrough skill](communication/skills/narrated-walkthrough/SKILL.md) for turning a pull request, feature or system into a narrated MP4 built from real command output, with layout checks, motion, captions and chapters. Rendering and narration run locally.
+
 **Code:** [elevate skill](code/skills/elevate/SKILL.md) for focused improvements to a selected worktree or branch diff.
 
 **UX:** [references](ux/references.md), including the recommended way to run developer-skill-pack's UX review skills on an app.
@@ -90,6 +92,7 @@ Install the domains you want:
 | Plugin | Skill |
 | --- | --- |
 | `code@oughta` | `elevate` |
+| `communication@oughta` | `narrated-walkthrough` |
 | `git@oughta` | `commit` |
 | `github@oughta` | `github-backlog-triage` |
 | `local-first@oughta` | `local-first-design` |
@@ -115,6 +118,10 @@ For Git-backed sources, refresh the catalog with `codex plugin marketplace upgra
 4. Verify those links and remove the fragment’s adoption note.
 
 Preserve the target project’s existing instructions when adopting or updating guidance.
+
+## Licence
+
+MIT, see [LICENSE](LICENSE). Third-party files keep their own licences, noted beside them, and the narrated walkthrough's Endless artwork has its own terms: see [its README](communication/skills/narrated-walkthrough/themes/endless/art/README.md).
 
 ## Contributing
 
