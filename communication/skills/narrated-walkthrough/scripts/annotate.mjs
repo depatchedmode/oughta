@@ -102,7 +102,7 @@ export async function annotate(page, locator, caption = "", options = {}) {
         Object.assign(tag.style, {
           position: "absolute", background: color, color: "#fff",
           font: "600 22px/1.25 -apple-system, system-ui, sans-serif",
-          padding: "8px 14px", borderRadius: "10px", maxWidth: "420px",
+          padding: "8px 14px", borderRadius: "10px", width: "max-content", maxWidth: "420px",
           boxShadow: "0 6px 20px rgba(0,0,0,0.3)", opacity: "0", transition: "opacity 200ms",
         });
         layer.appendChild(tag);
@@ -111,8 +111,9 @@ export async function annotate(page, locator, caption = "", options = {}) {
         const spots = {
           top: [box.x, box.y - gap - r.height],
           bottom: [box.x, box.y + box.height + gap],
-          left: [box.x - gap - r.width, box.y],
-          right: [box.x + box.width + gap, box.y],
+          // Beside the target, centred on it.
+          left: [box.x - gap - r.width, box.y + (box.height - r.height) / 2],
+          right: [box.x + box.width + gap, box.y + (box.height - r.height) / 2],
         };
         let [x, y] = spots[position] ?? spots.top;
         if (y < minY + 8) [x, y] = spots.bottom; // no room above: go below

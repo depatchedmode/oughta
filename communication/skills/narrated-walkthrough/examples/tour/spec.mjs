@@ -1,7 +1,24 @@
 // A short, self-contained walkthrough of this toolkit. It runs anywhere and uses most components,
 // so it doubles as a smoke test:  node ../../scripts/build.mjs spec.mjs --check --out "$(mktemp -d)/tour"
-export default ({ capture, term, code, bullets, split, stack, flow, cards, callout, stats, lede, note, mark, c, specDir }) => {
+// page.html stands in for the app a real walkthrough would screenshot (usually a localhost URL).
+import { pathToFileURL } from 'node:url';
+
+export default async ({ capture, screenshot, image, term, code, bullets, split, stack, flow, cards, callout, stats, lede, note, mark, c, specDir }) => {
   const cap = capture({ cwd: specDir });
+  const page = pathToFileURL(`${specDir}/page.html`).href;
+  const ringed = await screenshot(page, {
+    name: 'settings',
+    viewport: { width: 1200, height: 800 },
+    marks: [
+      { target: '#digest', caption: 'New setting', position: 'left' },
+      { target: '#saved', caption: 'Confirms the save', position: 'bottom' },
+    ],
+  });
+  const fullFrame = await screenshot(page, {
+    name: 'settings-full',
+    viewport: { width: 1920, height: 1080 },
+    marks: [{ target: '#digest', caption: 'New: weekly digest', position: 'left' }],
+  });
   const versions = [
     cap.shell('node --version'),
     cap.shell('ffmpeg -version | head -1 | cut -d" " -f1-3'),
@@ -60,6 +77,23 @@ export default ({ capture, term, code, bullets, split, stack, flow, cards, callo
           'Then mark each part with the step it belongs to, or let a bullet list reveal one bullet per step.',
           'With focus turned on, earlier steps fade back, so the viewer always knows which line I mean.',
         ],
+      },
+      {
+        title: 'A screenshot of a live page can ring what changed',
+        body: split(
+          code(`await screenshot('http://localhost:3000/settings', {\n  marks: [\n    { target: '#digest', caption: 'New setting' },\n    { target: '#saved', caption: 'Confirms the save' },\n  ],\n})`, { title: 'spec.mjs' }),
+          image(ringed, { title: 'settings', caption: 'A stand-in page that ships with the tour', step: 2 }),
+          { ratio: '1fr 1.25fr', align: 'center' },
+        ),
+        say: [
+          'When a change is something you can see, the spec can open the page, usually your app running locally, and point at the parts that matter.',
+          'Each target gets a ring and a short caption, drawn into the page itself before the screenshot is taken, so they line up exactly. A target that isn’t on the page stops the build.',
+        ],
+      },
+      {
+        title: 'A full-frame screenshot',
+        media: fullFrame,
+        say: 'A screenshot can also fill the whole frame, like this one. So can a screen recording. Give the slide a video file instead, and it plays while the narration runs.',
       },
       {
         title: 'The build catches slides a viewer can’t read',
