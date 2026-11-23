@@ -25,8 +25,7 @@ Start from `examples/tour/spec.mjs` (self-contained, uses most components). `ref
 is the full spec and component reference; `references/voice.md` covers recording and tuning
 voices, and `references/themes.md` covers repo themes and writing your own.
 `node --test $SKILL/tests/*.test.mjs` runs the tests (the build tests need setup.sh's Playwright,
-and the full-build test macOS's `say`). When changing the skill itself, `node $SKILL/scripts/regress.mjs record`
-before and `compare` after says which slides changed, and why (see README.md).
+and the full-build test macOS's `say`).
 
 ## Workflow
 
@@ -209,9 +208,8 @@ Keep a step's narration longer than its animation (the build extends the step if
 `out/` next to the spec: `<name>.mp4` (H.264/AAC, 1080p30, −16 LUFS, chapters per slide),
 `<name>.srt`, `narration.md`, `captures.txt`, `report.json`, `contact-sheet.png`,
 `slides/*.png` (one per step, resting state), `frames/` (motion frames), `html/*.html` (open in
-a browser to debug a layout; each is saved as checked, and can't reach the network; `html/source/`
-holds them as built), `shots/` (the spec's screenshots). `--check` writes `check.json` (its
-problems and the spec's captures) as its last step, in place of `report.json`. The build replaces the output folder's contents on every run, so it refuses an
+a browser to debug a layout; each is saved as checked, and can't reach the network), `shots/` (the
+spec's screenshots). The build replaces the output folder's contents on every run, so it refuses an
 `--out` folder that has other things in it and wasn't made by a build (it leaves a
 `.narrated-walkthrough` marker): point `--out` at a new folder. The last video stays until a full
 build has made its replacement, so a build that fails partway never costs it; then any older video
