@@ -18,15 +18,15 @@ a fixture theme (those need Playwright from `setup.sh`, and skip without it). Th
 `examples/tour/spec.mjs`, doubles as a smoke test:
 `node scripts/build.mjs examples/tour/spec.mjs --check --out "$(mktemp -d)/tour"`.
 
-To see whether a change alters the slides, run `node scripts/regress.mjs record` before it and
-`node scripts/regress.mjs compare` after. It builds the tour (or a spec you name) with `--check` in
-every theme, compares each slide's pixels and HTML with the recorded ones, and says why a slide
-differs: its markup or styles, the browser drawing the same HTML differently, or a spec's captured
-output changing (live data like IDs, which it sets aside for you to look at). Differences of a
-colour level or two from text smoothing are ignored (`--tolerance`). References live in the
-machine's home folder, since they depend on its fonts and browser; a different copy of the skill can
-record or compare, so you can record with the old code and compare with the new. It checks stills,
-not motion or audio.
+To see whether a change to the skill alters the slides, run `node scripts/regress.mjs record` with
+the code from before it and `node scripts/regress.mjs compare` with the code after: the same checkout
+at two times, or an old copy of the skill recording and a new one comparing. It builds the tour (or a
+spec you name) with `--check` in every theme, compares each slide's pixels and its HTML as built, and
+says why a slide differs: its markup, styles or script, the browser drawing the same HTML differently,
+or captured output on the slide changing (live data like IDs, which it sets aside for you to look
+at). Differences of a colour level or two from text smoothing are ignored (`--tolerance`). It exits
+1 when something changed and 2 when a build failed. References live in the machine's home folder,
+since they depend on its fonts and browser. It checks stills, not motion or audio.
 
 ## Credits
 

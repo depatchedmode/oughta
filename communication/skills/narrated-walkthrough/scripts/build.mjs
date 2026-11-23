@@ -16,7 +16,8 @@
 //   args after -- are passed to the spec as ctx.args (e.g. -- --repo ~/code/app).
 //
 // Output (DIR defaults to <spec dir>/out): <name>.mp4 (with chapters), <name>.srt, narration.md,
-// captures.txt, slides/*.png, html/*.html, contact-sheet.png, report.json.
+// captures.txt, slides/*.png, html/*.html (as checked; html/source/ as built), contact-sheet.png,
+// report.json. --check writes check.json instead of report.json, as its last act.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
@@ -29,7 +30,7 @@ import { fitAndCheck, markFootContrast } from './lib/check.mjs';
 import { createCapture, formatLog, head, pick } from './lib/capture.mjs';
 import { lintSpoken, makeLexicon, parseSay, resolveStyles } from './lib/narration.mjs';
 import { checkSpec, resolveContext } from './lib/context.mjs';
-import { ConfigError, SETUP } from './lib/paths.mjs';
+import { ConfigError, SETUP, SKILL } from './lib/paths.mjs';
 import { screenshotter } from './lib/screenshot.mjs';
 import { planTimeline, rangeLabel } from './lib/timeline.mjs';
 import { checkVoices, isRecorded, prepare, probeSeconds, reverbInstalled, resolveVoice, synthesize } from './lib/tts.mjs';
@@ -311,6 +312,8 @@ for (const dir of checkOnly ? ['slides', 'html'] : ['slides', 'html', 'audio', '
   rmSync(path.join(out, dir), { recursive: true, force: true });
   mkdirSync(path.join(out, dir), { recursive: true });
 }
+mkdirSync(path.join(out, 'html/source'));
+rmSync(path.join(out, 'check.json'), { force: true });
 shots.commit();
 // The last video stays until this build has made its own (see the end), so a build that fails
 // partway never costs the last good one. --check leaves it alone and says it's older.
@@ -325,7 +328,10 @@ let trackerY = null;
 for (const s of slides) {
   if (s.media) continue;
   const html = path.join(out, 'html', `slide-${pad(s.n)}.html`);
-  writeFileSync(html, slideHtml(s));
+  const source = slideHtml(s);
+  writeFileSync(html, source);
+  // As built, before the check fits panels or marks the footer (regress.mjs compares these).
+  writeFileSync(path.join(out, 'html/source', `slide-${pad(s.n)}.html`), source);
   await page.goto(pathToFileURL(html).href);
   // Browsers fetch a face only when something uses it; load every declared face (each weight and
   // style) so the font check tests the files themselves, not whether this slide uses each one.
@@ -409,6 +415,14 @@ if (checkOnly) {
   console.log("\nWhat the voice will read (after spec.lexicon and the engine's own normalisation):");
   for (const s of slides)
     for (const st of s.steps) console.log(`  ${s.n}.${st.i}  ${st.segments.map((g) => `${who(g)}${g.spoken.trim()}${g.pauseAfter ? ` [${g.pauseAfter}s]` : ''}`).join(' ')}`);
+  // Last, so its presence means the check ran to the end: what it found, what the spec captured,
+  // and the folders this build's paths point into (regress.mjs reads it).
+  const check = {
+    problems,
+    captures: captures.flatMap((c) => c.log.map(({ cmd, status, out: text }) => ({ cmd, status, out: text }))),
+    paths: { out, skill: SKILL, spec: path.dirname(specFile), repo: context.root },
+  };
+  writeFileSync(path.join(out, 'check.json'), JSON.stringify(check, null, 2));
   process.exit(errors.length ? 1 : 0);
 }
 if (errors.length && !force) {
