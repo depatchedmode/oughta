@@ -109,13 +109,16 @@ export default async ({ screenshot, image }) => {
 
 ## Voice config
 
-| engine | fields |
+| field | meaning |
 | --- | --- |
-| `reverb` (default) | `voice` (recorded voice name like `alex`, preset, `.npz` path, or `{ audio, text }` to clone), `language` (`en`, `de`, `fr`, `es`, `it`, `pl`, `pt`), `speed`, `seed`, `variant` (`int8` default; `fp16`, `fp32`, `int4`), `steps` (sampler steps, default 8) |
-| `say` | `voice` (macOS voice name, like `Samantha`; `say -v '?'` lists them), `rate` (words/min, default 178), `speed` |
+| `voice` | a recorded voice name like `alex`, a Reverb preset, an `.npz` path, or `{ audio, text }` to clone |
+| `language` | `en`, `de`, `fr`, `es`, `it`, `pl` or `pt` |
+| `speed`, `seed` | pace (1 is the voice's own), and which take |
+| `variant` | `int8` (default), `fp16`, `fp32` or `int4` |
+| `steps` | sampler steps, default 8 |
 
 Voice files (`.npz`, a clone's `audio`) are relative to the spec. Settings are checked before
-anything runs: an unknown engine, language or variant stops the build.
+anything runs: an unknown language or variant stops the build.
 
 Environment: `NARRATED_WALKTHROUGH_HOME` (default `~/.local/share/narrated-walkthrough`) holds the
 Python venv, Playwright, recorded voices, machine themes and `config.json`;

@@ -4,9 +4,8 @@ The narrator is set in the machine config (`~/.local/share/narrated-walkthrough/
 `{ "voice": { "voice": "<name>" } }`), a repo's `.walkthrough/config.json`, or the spec's `voice`,
 later ones winning. `theme.mjs show` prints the voice in effect and where it came from. The build
 checks every voice (the narrator's and each `[voice NAME]` cue's, clone recordings included) against
-the engine in use (Reverb's presets and your recorded voices, or `say`'s voices) before rendering;
-one that doesn't exist stops the build. A layer that changes the engine replaces the whole narrator,
-so a Reverb voice and its speed never carry over to `say`. An `.npz` path or a clone's `audio` is
+Reverb's presets and your recorded voices before rendering; one that doesn't exist stops the build.
+An `.npz` path or a clone's `audio` is
 relative to the file that set it (the spec, the repo config, or the machine home).
 
 ## Your own voice
@@ -53,10 +52,3 @@ narrating with one works offline once it has been used.
 Same text + voice + seed = same audio, cached in `out/.tts-cache`. Re-recording a voice, replacing a
 clone's recording, or upgrading reverb-tts invalidates it, and takes finished before a failed build stay cached. For a
 different take of one slide, set `seed` on that slide.
-
-## Engines
-
-Fallback without Reverb: `voice: { engine: 'say', voice: 'Samantha' }` (macOS). Engines live in
-`scripts/lib/tts.mjs`: an engine is `synth(jobs)` → `[{ seconds, spoken }]`, where each job is
-`{ text, out, meta, cfg }` with its own resolved voice config and writes its `meta` file when
-done, plus `prepare`, `voices` and `version`. Add one there; don't fork the pipeline.

@@ -15,7 +15,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { ConfigError, HOME, MACHINE_CONFIG, NAME, machineConfig, readJson } from './paths.mjs';
 import { FALLBACK_THEME, loadTheme, withLogo } from './theme.mjs';
-import { ENGINES, REVERB, mergeVoices } from './tts.mjs';
+import { REVERB, mergeVoices } from './tts.mjs';
 
 const git = (dir, args) => {
   try {
@@ -86,17 +86,14 @@ export function checkConfig(c, where) {
     const clone = isObject(v.voice) && typeof v.voice.audio === 'string' && typeof v.voice.text === 'string';
     if (v.voice !== undefined && typeof v.voice !== 'string' && !clone) bad(`voice.voice is a voice name, an .npz path, or { "audio": "ref.wav", "text": "transcript" } (got ${show(v.voice)})`);
     if (v.speed !== undefined && !isSpeed(v.speed)) bad(`voice.speed is a number from ${SPEED[0]} to ${SPEED[1]} (got ${show(v.speed)})`);
-    if (v.rate !== undefined && (typeof v.rate !== 'number' || !(v.rate >= 50 && v.rate <= 600))) bad(`voice.rate is words per minute, from 50 to 600 (got ${show(v.rate)})`);
     if (v.seed !== undefined && !(Number.isInteger(v.seed) && v.seed >= 0)) bad(`voice.seed is a whole number (got ${show(v.seed)})`);
     if (v.steps !== undefined && !(Number.isInteger(v.steps) && v.steps >= 1 && v.steps <= MAX_TTS_STEPS)) bad(`voice.steps is a whole number from 1 to ${MAX_TTS_STEPS} (got ${show(v.steps)})`);
-    if (v.engine !== undefined && !ENGINES.includes(v.engine)) bad(`voice.engine is ${ENGINES.join(' or ')} (got ${show(v.engine)})`);
   }
   return c;
 }
 
 /** The merged narrator: things that only make sense once the layers are combined. */
 function checkVoice(v, where) {
-  if ((v.engine ?? 'reverb') !== 'reverb') return v;
   const bad = (msg) => {
     throw new ConfigError(`${where}: ${msg}`);
   };

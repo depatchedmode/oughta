@@ -62,9 +62,7 @@ console.log(voices ? `${voices.length} preset voices` : "couldn'"'"'t list the p
 if ! reverb; then
   cat >&2 <<'EOF'
 
-Reverb isn't set up, so narration can't use it yet; fix the problem above and run setup.sh again.
-Slides render already, and on macOS a build can narrate with the system voice meanwhile:
-  voice: { engine: 'say', voice: 'Samantha' }   in the spec, or in config.json for this machine
+Reverb isn't set up, so builds can't run yet; fix the problem above and run setup.sh again.
 EOF
   exit 1
 fi

@@ -10,8 +10,7 @@ downloads (Reverb's model, about 300 MB, in `~/.cache/huggingface`; Chromium in 
 browser cache, `~/Library/Caches/ms-playwright` on macOS). Tested on
 macOS with Apple Silicon. Recording your own voice with `scripts/record-voice.mjs` needs macOS;
 elsewhere, pass it an existing recording with `--from`. If Reverb can't be set up (Python too old,
-say), `setup.sh` still installs Playwright and says so, and builds can narrate with macOS's voice
-(`voice: { engine: 'say' }`) meanwhile.
+say), `setup.sh` says what failed; builds need it, so fix that and run it again.
 
 `node --test tests/*.test.mjs` runs the tests: narration, voices, themes, and check builds against
 a fixture theme (those need Playwright from `setup.sh`, and skip without it). The example tour,

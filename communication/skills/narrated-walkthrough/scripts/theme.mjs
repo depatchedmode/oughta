@@ -103,7 +103,7 @@ switch (cmd) {
     for (const note of c.theme.notes) console.log(`note     ${note}`);
     console.log(`brand    ${JSON.stringify(c.brand)}`);
     console.log(`footer   ${c.footer ?? '(spec title)'}`);
-    console.log(`voice    ${v.engine} ${v.voiceName}, speed ${v.speed ?? 1}   chosen by ${c.voiceWhy}`);
+    console.log(`voice    ${v.voiceName}, speed ${v.speed ?? 1}   chosen by ${c.voiceWhy}`);
     console.log(`lexicon  ${Object.keys(c.lexicon).length} repo-wide entr${Object.keys(c.lexicon).length === 1 ? 'y' : 'ies'}`);
     break;
   }

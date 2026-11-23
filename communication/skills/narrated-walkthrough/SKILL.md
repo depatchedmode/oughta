@@ -25,7 +25,7 @@ Start from `examples/tour/spec.mjs` (self-contained, uses most components). `ref
 is the full spec and component reference; `references/voice.md` covers recording and tuning
 voices, and `references/themes.md` covers repo themes and writing your own.
 `node --test $SKILL/tests/*.test.mjs` runs the tests (the build tests need setup.sh's Playwright,
-and the full-build test macOS's `say`).
+and the full-build tests its Reverb too).
 
 ## Workflow
 
@@ -135,10 +135,9 @@ your use qualifies (work for a business may not) before you use this skill for i
 `~/.local/share/narrated-walkthrough/config.json`: `{ "voice": { "voice": "<name>" } }`. A repo
 config's or a spec's `voice` overrides it, and `theme.mjs show` prints the voice in effect and
 why. The build checks every voice before rendering and stops on one that doesn't exist.
-Recording, styles, speeds, presets, the take cache and other engines: `references/voice.md`.
+Recording, styles, speeds, presets and the take cache: `references/voice.md`.
 
 - For a different take of one slide, set `seed` on that slide.
-- Fallback without Reverb: `voice: { engine: 'say', voice: 'Samantha' }` (macOS).
 
 ## Themes
 

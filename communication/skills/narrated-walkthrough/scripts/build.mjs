@@ -183,7 +183,7 @@ if (only && !slides.length) throw new ConfigError(`--only ${opts0.only} matches 
 const problems = []; // { slide, level: 'error'|'warn', msg }
 const problem = (slide, level, msg) => problems.push({ slide, level, msg });
 
-const narrator = voice.engine === 'reverb' && typeof voice.voiceName === 'string' ? voice.voiceName : null;
+const narrator = voice.voiceName;
 const missingStyles = new Set();
 for (const s of slides) {
   const says = s.say === undefined ? [] : [].concat(s.say);
@@ -197,13 +197,13 @@ for (const s of slides) {
 // Styles are recordings of the narrator, so a preset narrator reads [dry] and [up] lines in its plain voice.
 for (const st of missingStyles) {
   if (isRecorded(narrator)) problem(0, 'warn', `no recorded "${narrator}-${st}" voice, so [${st}] lines use the plain voice (record one with record-voice.mjs)`);
-  else console.log(`note: [${st}] lines use the plain ${narrator ?? voice.engine} voice (styles need a recorded narrator)`);
+  else console.log(`note: [${st}] lines use the plain ${narrator} voice (styles need a recorded narrator)`);
 }
 
 // Every voice the narration uses must exist before anything is rendered.
 {
   const configured = [context.voice.voice ?? voice.voiceName, ...slides.flatMap((s) => s.steps.flatMap((st) => st.segments.map((g) => g.voice)))].filter(Boolean);
-  const { unknown, note } = checkVoices(configured, voice.engine);
+  const { unknown, note } = checkVoices(configured);
   if (note) console.log(`note: ${note}`);
   // No video can be made with a voice that doesn't exist, so this stops here, --force or not.
   if (unknown.length) {
@@ -211,9 +211,9 @@ for (const st of missingStyles) {
     throw Object.assign(new Error(lines.join('\n')), { exitCode: 1 });
   }
 }
-if (voice.engine === 'reverb' && !reverbInstalled()) throw Object.assign(new Error(`Reverb isn't installed. Run: ${SETUP}`), { exitCode: 1 });
-// --check shows what the voice will read; asking now means a voice setting the engine rejects
-// (a language it doesn't speak, say) stops the check, instead of the full build later.
+if (!reverbInstalled()) throw Object.assign(new Error(`Reverb isn't installed. Run: ${SETUP}`), { exitCode: 1 });
+// --check shows what the voice will read; asking now means a voice setting Reverb rejects stops
+// the check, instead of the full build later.
 let readAs;
 if (checkOnly) {
   try {
@@ -406,7 +406,7 @@ console.log(`layout: ${count(errors.length, 'error')}, ${count(problems.length -
 if (checkOnly) {
   slides.flatMap((s) => s.steps.flatMap((st) => st.segments)).forEach((g, k) => (g.spoken = readAs[k]));
   const who = (g) => (g.voice ? `(${g.voice}) ` : g.style ? `(${g.style}?) ` : '');
-  console.log("\nWhat the voice will read (after spec.lexicon and the engine's own normalisation):");
+  console.log("\nWhat the voice will read (after spec.lexicon and Reverb's own normalisation):");
   for (const s of slides)
     for (const st of s.steps) console.log(`  ${s.n}.${st.i}  ${st.segments.map((g) => `${who(g)}${g.spoken.trim()}${g.pauseAfter ? ` [${g.pauseAfter}s]` : ''}`).join(' ')}`);
   process.exit(errors.length ? 1 : 0);
@@ -419,7 +419,7 @@ if (errors.length && !force) {
 // ---- narrate ---------------------------------------------------------------------------------------
 // One job per spoken segment; each take is copied back onto the segment it reads.
 const jobs = slides.flatMap((s) => s.steps.flatMap((st) => st.segments.filter((g) => g.input).map((g) => ({ seg: g, text: g.input, voice: g.voice, speed: st.speed, seed: st.seed }))));
-console.log(`\nnarrating ${count(jobs.length, 'segment')} with ${voice.engine}:${voice.voiceName}`);
+console.log(`\nnarrating ${count(jobs.length, 'segment')} with ${voice.voiceName}`);
 // One cache for the spec's output folder, shared by --only runs, so a full build reuses their takes.
 synthesize(jobs, context.voice, path.join(baseOut, '.tts-cache'));
 for (const { seg, audio, seconds, spoken, cached } of jobs) Object.assign(seg, { audio, seconds, spoken, cached });
@@ -523,7 +523,7 @@ writeFileSync(path.join(out, `${name}.srt`), cues.map((c, i) => `${i + 1}\n${ts(
 const mmss = (sec) => `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(2, '0')}`;
 writeFileSync(
   path.join(out, 'narration.md'),
-  `# ${spec.title ?? name}\n\nVoice: ${voice.engine} ${voice.voiceName}, speed ${voice.speed ?? 1}\n\n` +
+  `# ${spec.title ?? name}\n\nVoice: ${voice.voiceName}, speed ${voice.speed ?? 1}\n\n` +
     slides
       .map(
         (s) =>

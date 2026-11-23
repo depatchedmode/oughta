@@ -1,13 +1,12 @@
-// Pluggable text-to-speech. An engine turns jobs [{ text, out, meta, cfg }] into audio files and
-// reports [{ seconds, spoken }], where spoken is the text as the engine will actually read it.
-// Results are cached by a hash of everything that affects the audio, so rebuilding after a
+// Text to speech with Reverb-TTS, run locally by reverb_worker.py. Jobs [{ text, out, meta, cfg }]
+// become audio files, with [{ seconds, spoken }], where spoken is the text as Reverb actually reads
+// it. Results are cached by a hash of everything that affects the audio, so rebuilding after a
 // one-slide edit only re-synthesises that slide.
 //
 // Voice config (spec.voice, repo or machine config), with defaults:
-//   { engine: 'reverb', voice: 'en_female_narrator', language: 'en', speed: 1.0, seed: 7, variant: 'int8' }
+//   { voice: 'en_female_narrator', language: 'en', speed: 1.0, seed: 7, variant: 'int8' }
 //   voice may be a preset name, a recorded voice's name (see record-voice.mjs), an absolute .npz
 //   path, or { audio: '/abs/ref.wav', text: 'exact transcript' } to clone (3–10 s, clean, with consent).
-//   { engine: 'say', voice: 'Samantha', rate: 178 }   macOS fallback, no model needed.
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
@@ -18,28 +17,24 @@ const PY = path.join(VENV, 'bin/python');
 const WORKER = path.join(SKILL, 'scripts/reverb_worker.py');
 const PRESETS_CACHE = path.join(HOME, 'presets.json');
 
-export const BUILTIN_VOICE = { engine: 'reverb', voice: 'en_female_narrator', language: 'en', speed: 1.0, seed: 7, variant: 'int8' };
+export const BUILTIN_VOICE = { voice: 'en_female_narrator', language: 'en', speed: 1.0, seed: 7, variant: 'int8' };
 /** What Reverb accepts, so a config can be checked before anything runs. */
 export const REVERB = { languages: ['de', 'en', 'es', 'fr', 'it', 'pl', 'pt'], variants: ['int8', 'fp16', 'fp32', 'int4'] };
 
 /**
  * Merge voice settings, lowest layer first: [[settings, where], ...]. The narrator is one thing:
- * a layer that picks a different voice drops the speed and rate of the layers below it (a repo
- * that picks another narrator doesn't inherit the machine narrator's pace), and one that picks a
- * different engine drops their voice too (a Reverb voice name means nothing to say). Returns
- * { voice, from }: the merged settings and where the voice itself was chosen.
+ * a layer that picks a different voice drops the speed of the layers below it (a repo that picks
+ * another narrator doesn't inherit the machine narrator's pace). Returns { voice, from }: the
+ * merged settings and where the voice itself was chosen.
  */
 export function mergeVoices(layers) {
   let voice = {};
   let from = 'built-in default';
   for (const [layer, where] of layers) {
     if (!layer) continue;
-    const engine = layer.engine !== undefined && layer.engine !== (voice.engine ?? BUILTIN_VOICE.engine);
-    if (engine || (layer.voice !== undefined && layer.voice !== voice.voice)) {
+    if (layer.voice !== undefined && layer.voice !== voice.voice) {
       voice = { ...voice };
       delete voice.speed;
-      delete voice.rate;
-      if (engine) delete voice.voice;
       from = where;
     }
     voice = { ...voice, ...layer };
@@ -77,65 +72,25 @@ function reverbVersion() {
   return reverbVersionCache;
 }
 
-const engines = {
-  reverb: {
-    ext: 'wav',
-    // Each job carries its own resolved cfg (voice and speed differ per style segment). The worker
-    // writes each job's .json as it finishes, so takes done before a failure stay cached.
-    synth(jobs) {
-      const { results } = callReverb({
-        op: 'synth',
-        variant: jobs[0].cfg.variant,
-        jobs: jobs.map(({ text, out, meta, cfg }) => ({
-          text,
-          out,
-          meta,
-          voice: cfg.voice,
-          language: cfg.language,
-          speed: cfg.speed,
-          seed: cfg.seed,
-          steps: cfg.steps,
-        })),
-      });
-      return results.map((r) => ({ seconds: r.seconds, spoken: r.spoken }));
-    },
-    prepare(texts, cfg) {
-      return callReverb({ op: 'prepare', language: cfg.language, texts }, { quiet: true }).texts;
-    },
-    // Recorded voices first, then Reverb's presets (null when they can't be listed, e.g. offline).
-    voices: () => ({ recorded: recordedVoices(), presets: presetVoices() }),
-    version: reverbVersion,
-  },
-  say: {
-    ext: 'aiff',
-    synth(jobs) {
-      return jobs.map(({ text, out, meta, cfg }) => {
-        const rate = Math.round((cfg.rate ?? 178) * (cfg.speed ?? 1));
-        // The text goes in on stdin: as an argument, narration starting with "-" would be an option.
-        execFileSync('say', ['-v', cfg.voice ?? 'Samantha', '-r', String(rate), '-o', out, '-f', '-'], { input: text });
-        const result = { seconds: probeSeconds(out), spoken: text };
-        writeFileSync(meta, JSON.stringify(result));
-        return result;
-      });
-    },
-    prepare: (texts) => texts,
-    // Lines look like "Samantha (English (US)) en_US    # Hello!": say takes the full name and
-    // the short one ("Samantha").
-    voices: () => ({
-      recorded: [],
-      presets: [
-        ...new Set(
-          execFileSync('say', ['-v', '?'], { encoding: 'utf8' })
-            .split('\n')
-            .map((l) => l.replace(/\s*#.*$/, '').replace(/\s+[a-z]{2,3}_[A-Za-z0-9]+$/, '').trim())
-            .filter(Boolean)
-            .flatMap((full) => [full, full.replace(/\s*\(.*$/, '')]),
-        ),
-      ],
-    }),
-    version: () => null,
-  },
-};
+// Each job carries its own resolved cfg (voice and speed differ per style segment). The worker
+// writes each job's .json as it finishes, so takes done before a failure stay cached.
+function synth(jobs) {
+  const { results } = callReverb({
+    op: 'synth',
+    variant: jobs[0].cfg.variant,
+    jobs: jobs.map(({ text, out, meta, cfg }) => ({
+      text,
+      out,
+      meta,
+      voice: cfg.voice,
+      language: cfg.language,
+      speed: cfg.speed,
+      seed: cfg.seed,
+      steps: cfg.steps,
+    })),
+  });
+  return results.map((r) => ({ seconds: r.seconds, spoken: r.spoken }));
+}
 
 /** Names of the voices recorded on this machine (record-voice.mjs), styles included. */
 export const recordedVoices = () => {
@@ -192,7 +147,7 @@ export function cloneVoice({ audio, text, language = 'en', npz, test, line }) {
  * the preset list, or null if it couldn't be fetched (then names that aren't recorded are let
  * through, and the caller says the check didn't run).
  */
-export function unknownVoices(voices, { isRecorded: recorded, exists, presets, kind = 'a Reverb preset or a voice recorded on this machine' }) {
+export function unknownVoices(voices, { isRecorded: recorded, exists, presets }) {
   const out = [];
   for (const v of new Set(voices)) {
     if (typeof v !== 'string') {
@@ -201,7 +156,7 @@ export function unknownVoices(voices, { isRecorded: recorded, exists, presets, k
     } else if (path.isAbsolute(v) || v.endsWith('.npz')) {
       if (!exists(v)) out.push({ voice: v, why: 'no such file' });
     } else if (!recorded(v) && presets && !presets.includes(v)) {
-      out.push({ voice: v, why: `isn't ${kind}` });
+      out.push({ voice: v, why: "isn't a Reverb preset or a voice recorded on this machine" });
     }
   }
   return out;
@@ -211,11 +166,7 @@ export function unknownVoices(voices, { isRecorded: recorded, exists, presets, k
  * Check configured voices (the narrator's config value and each [voice NAME] cue) before anything
  * is rendered. Returns { unknown: [{ voice, why }], note }: note says why names weren't checked.
  */
-export function checkVoices(voices, engine = 'reverb') {
-  if (engine !== 'reverb') {
-    const { presets } = engines[engine].voices();
-    return { unknown: unknownVoices(voices, { isRecorded: () => false, exists: existsSync, presets, kind: `a ${engine} voice on this machine` }), note: null };
-  }
+export function checkVoices(voices) {
   const names = voices.filter((v) => typeof v === 'string' && !path.isAbsolute(v) && !v.endsWith('.npz'));
   const needPresets = names.some((n) => !isRecorded(n));
   const presets = needPresets ? presetVoices() : [];
@@ -233,9 +184,6 @@ export function checkVoices(voices, engine = 'reverb') {
  * recorded voices and voiceName kept as the short name.
  */
 export function resolveVoice(voice = {}) {
-  const engine = voice.engine ?? BUILTIN_VOICE.engine;
-  if (!engines[engine]) throw new Error(`unknown TTS engine "${engine}" (have: ${Object.keys(engines).join(', ')})`);
-  if (engine !== 'reverb') return { engine, ...voice, voiceName: voice.voice ?? 'Samantha' };
   const name = voice.voice ?? BUILTIN_VOICE.voice;
   let calibration = {};
   let resolved = name;
@@ -267,38 +215,29 @@ export function probeSeconds(file) {
  */
 export function synthesize(jobs, voiceSpec, cacheDir) {
   mkdirSync(cacheDir, { recursive: true });
-  const todo = new Map(); // engine → [{ job, text, out, meta, cfg }]
+  const todo = []; // [{ job, text, out, meta, cfg }]
   for (const job of jobs) {
     const base = resolveVoice(job.voice ? mergeVoices([[voiceSpec], [{ voice: job.voice }]]).voice : voiceSpec);
     const cfg = { ...base, speed: Number(((base.speed ?? 1) * (job.speed ?? 1)).toFixed(3)), seed: job.seed ?? base.seed };
-    const engine = engines[cfg.engine];
     // A recorded voice, or a clone's recording, can be replaced under the same name; its file time
     // keeps the cache honest.
     const file = typeof cfg.voice === 'string' ? cfg.voice : cfg.voice?.audio;
     const voiceStamp = typeof file === 'string' && existsSync(file) ? statSync(file).mtimeMs : null;
-    const key = createHash('sha256').update(JSON.stringify({ cfg, voiceStamp, version: engine.version(), text: job.text })).digest('hex').slice(0, 20);
-    job.audio = path.join(cacheDir, `${key}.${engine.ext}`);
+    const key = createHash('sha256').update(JSON.stringify({ cfg, voiceStamp, version: reverbVersion(), text: job.text })).digest('hex').slice(0, 20);
+    job.audio = path.join(cacheDir, `${key}.wav`);
     const meta = `${job.audio}.json`;
     if (existsSync(job.audio) && existsSync(meta)) {
       Object.assign(job, JSON.parse(readFileSync(meta, 'utf8')), { cached: true });
     } else {
-      if (!todo.has(cfg.engine)) todo.set(cfg.engine, []);
-      todo.get(cfg.engine).push({ job, text: job.text, out: job.audio, meta, cfg });
+      todo.push({ job, text: job.text, out: job.audio, meta, cfg });
     }
   }
-  for (const [name, items] of todo) {
-    const results = engines[name].synth(items);
-    items.forEach(({ job }, i) => Object.assign(job, results[i], { cached: false }));
-  }
+  if (todo.length) synth(todo).forEach((result, i) => Object.assign(todo[i].job, result, { cached: false }));
   return jobs;
 }
 
-/** The text as the engine will read it (numbers, dates, symbols written out). */
-export const ENGINES = Object.keys(engines);
+/** The text as Reverb will read it (numbers, dates, symbols written out). */
+export const prepare = (texts, voiceCfg) => callReverb({ op: 'prepare', language: resolveVoice(voiceCfg).language, texts }, { quiet: true }).texts;
 
-export const prepare = (texts, voiceCfg) => {
-  const cfg = resolveVoice(voiceCfg);
-  return engines[cfg.engine].prepare(texts, cfg);
-};
-
-export const listVoices = (voiceCfg) => engines[resolveVoice(voiceCfg).engine].voices();
+/** Recorded voices, then Reverb's presets (null when they can't be listed, e.g. offline). */
+export const listVoices = () => ({ recorded: recordedVoices(), presets: presetVoices() });

@@ -143,7 +143,6 @@ test('config values are checked where they enter, naming the file', () => {
   // A repo's config can't ask for hours of still frames or an engine that never finishes.
   assert.throws(() => checkConfig({ timing: { hold: 100000 } }, 'x'), /timing\.hold is a number of seconds from 0 to 30/);
   assert.throws(() => checkConfig({ voice: { steps: 1e6 } }, 'x'), /voice\.steps is a whole number from 1 to 200/);
-  assert.throws(() => checkConfig({ voice: { rate: 1 } }, 'x'), /voice\.rate/);
   assert.doesNotThrow(() => checkConfig({ timing: { lead: 0 }, motion: false, footer: false, lexicon: { a: 'b' }, voice: { voice: { audio: 'r.wav', text: 't' }, speed: 0.9, seed: 3 } }, 'x'));
 });
 
@@ -181,14 +180,12 @@ test('a spec is checked slide by slide before anything runs', () => {
   for (const [spec, re] of bad) assert.throws(() => checkSpec(spec), re, JSON.stringify(spec));
 });
 
-test('voice settings are checked, after merging for what depends on the engine', () => {
+test('voice settings are checked, after merging the layers', () => {
   const dir = tmpRepo({});
   const ctx = (voice) => resolveContext({ repo: dir, repoExplicit: true, specDir: '/specs', spec: { voice } });
-  assert.throws(() => ctx({ engine: 'espeak' }), /voice\.engine is reverb or say/);
   assert.throws(() => ctx({ language: 'english' }), /voice\.language is one of de, en/);
   assert.throws(() => ctx({ variant: 'int3' }), /voice\.variant/);
   assert.throws(() => ctx({ steps: 0 }), /voice\.steps/);
-  assert.doesNotThrow(() => ctx({ engine: 'say', language: 'en-GB' }), "say doesn't use Reverb's languages");
 });
 
 test('voice files are relative to the file that set them', () => {

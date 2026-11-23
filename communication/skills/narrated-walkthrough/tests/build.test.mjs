@@ -14,6 +14,7 @@ import { annotate } from '../scripts/annotate.mjs';
 import * as components from '../scripts/lib/components.mjs';
 import { chromium, launch } from '../scripts/lib/browser.mjs';
 import { HOME, NODE_DIR, SKILL, VENV } from '../scripts/lib/paths.mjs';
+import { reverbInstalled } from '../scripts/lib/tts.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const BUILD = path.join(here, '../scripts/build.mjs');
@@ -341,15 +342,15 @@ test('a spec can screenshot a live page, with a ring and caption, while slides s
   assert.match(r.stderr, /slides render offline, so images must be files/);
 });
 
-// A full build with macOS's built-in voice: narration, timing, captions, chapters and the report.
-const darwin = { skip: opts.skip || (process.platform !== 'darwin' && 'needs macOS say') };
-test('a full build: captions follow pauses, pause-only steps keep their pause, chapters per slide', darwin, () => {
+// Full builds narrate with Reverb's default preset: narration, timing, captions, chapters and the report.
+const full = { skip: opts.skip || (!reverbInstalled() && "Reverb isn't installed (run setup.sh)") };
+test('a full build: captions follow pauses, pause-only steps keep their pause, chapters per slide', full, () => {
   const out = path.join(tmp, 'full');
   const slides = `[
     { title: 'One', say: ['First part is here. [pause 1] And then more words follow.', '[pause 1]'] },
     { title: 'Two', say: 'Done.' },
   ]`;
-  const first = spec('full-a', `{ name: 'first', title: 'Full', voice: { engine: 'say' }, motion: false, slides: ${slides} }`);
+  const first = spec('full-a', `{ name: 'first', title: 'Full', motion: false, slides: ${slides} }`);
   const r = build([first, '--out', out]);
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const report = JSON.parse(readFileSync(path.join(out, 'report.json'), 'utf8'));
@@ -367,7 +368,7 @@ test('a full build: captions follow pauses, pause-only steps keep their pause, c
   assert.deepEqual(chapters.map((c) => c.tags.title), ['One', 'Two']);
 
   // Renamed spec: the old video goes. A check run keeps the new one, and says it's older.
-  const second = spec('full-b', `{ name: 'second', title: 'Full', voice: { engine: 'say' }, motion: false, slides: ${slides} }`);
+  const second = spec('full-b', `{ name: 'second', title: 'Full', motion: false, slides: ${slides} }`);
   assert.equal(build([second, '--out', out]).status, 0);
   assert.ok(!existsSync(path.join(out, 'first.mp4')) && !existsSync(path.join(out, 'first.srt')), 'no video left from the old name');
   const check = build([second, '--check', '--out', out]);
@@ -381,7 +382,7 @@ test('a full build: captions follow pauses, pause-only steps keep their pause, c
 
   // So does one that fails after rendering (here, a clip ffmpeg can't read).
   writeFileSync(path.join(tmp, 'broken.mp4'), 'not a video');
-  const late = spec('full-d', `{ name: 'third', title: 'Full', voice: { engine: 'say' }, motion: false, slides: [{ title: 'One', say: 'Hi.' }, { media: 'broken.mp4', say: 'A clip.' }] }`);
+  const late = spec('full-d', `{ name: 'third', title: 'Full', motion: false, slides: [{ title: 'One', say: 'Hi.' }, { media: 'broken.mp4', say: 'A clip.' }] }`);
   assert.notEqual(build([late, '--out', out]).status, 0);
   assert.ok(existsSync(path.join(out, 'second.mp4')) && existsSync(path.join(out, 'second.srt')) && existsSync(path.join(out, 'report.json')), 'the last video, captions and report survive a late failure');
 });
@@ -398,14 +399,6 @@ test('html/ keeps each slide as checked: fitted panels and the footer contrast m
   const html = readFileSync(path.join(tmp, 'trusted/html/slide-02.html'), 'utf8');
   assert.match(html, /class="[^"]*\bon-(dark|light)\b/);
   assert.match(html, /Content-Security-Policy/);
-});
-
-test("the say engine's voices are checked too", { skip: opts.skip || (process.platform !== 'darwin' && 'needs macOS say') }, () => {
-  const file = spec('say-typo', `{ title: 't', voice: { engine: 'say', voice: 'Samanta' }, slides: [{ title: 'One', say: 'Hi. [voice en_female_narrator] A preset.' }] }`);
-  const r = build([file, '--check', '--out', path.join(tmp, 'say-typo')]);
-  assert.equal(r.status, 1, r.stdout + r.stderr);
-  assert.match(r.stderr, /voice "Samanta": isn't a say voice/);
-  assert.match(r.stderr, /voice "en_female_narrator": isn't a say voice/);
 });
 
 test('screenshot marks: the page scrolls to them, and marks that cannot all be seen stop the build', opts, async () => {
@@ -510,22 +503,23 @@ test('one build at a time per folder; a lock left by a stopped build is taken ov
   assert.equal(readFileSync(path.join(out, 'audio/01-1.wav'), 'utf8'), 'keep', "--check leaves the last video's audio alone");
 });
 
-test("speak.mjs previews the machine's narrator, as the build would use it", darwin, () => {
+test("speak.mjs previews the machine's narrator, as the build would use it", full, () => {
   const home2 = path.join(tmp, 'speak-home');
   mkdirSync(home2, { recursive: true });
-  writeFileSync(path.join(home2, 'config.json'), JSON.stringify({ voice: { engine: 'say', voice: 'Samantha' } }));
+  if (existsSync(path.join(HOME, 'presets.json'))) cpSync(path.join(HOME, 'presets.json'), path.join(home2, 'presets.json'));
+  writeFileSync(path.join(home2, 'config.json'), JSON.stringify({ voice: { voice: 'en_male_narrator_1' } }));
   const out = path.join(tmp, 'speak');
   const r = spawnSync(process.execPath, [path.join(here, '../scripts/speak.mjs'), 'Hello there.', '--out', out], {
-    env: { ...process.env, NARRATED_WALKTHROUGH_HOME: home2, NARRATED_WALKTHROUGH_VENV: path.join(home2, 'no-venv') },
+    env: { ...process.env, NARRATED_WALKTHROUGH_HOME: home2, NARRATED_WALKTHROUGH_VENV: VENV },
     encoding: 'utf8',
   });
   assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.ok(existsSync(path.join(out, 'Samantha-seed7.aiff')));
+  assert.ok(existsSync(path.join(out, 'en_male_narrator_1-seed7.wav')));
 });
 
-test('the default, with motion: frames, exits and a video whose length matches its steps', darwin, () => {
+test('the default, with motion: frames, exits and a video whose length matches its steps', full, () => {
   const out = path.join(tmp, 'motion-full');
-  const file = spec('motion-full', `{ name: 'moving', title: 'Motion', voice: { engine: 'say' }, slides: [
+  const file = spec('motion-full', `{ name: 'moving', title: 'Motion', slides: [
     { layout: 'title', kicker: 'PR #1', title: 'A title', say: '-5 degrees is cold, and this line starts with a minus sign.' },
     { title: 'Two steps', body: c.bullets(['One', 'Two'], { reveal: 1 }) + c.term('$ echo hi\\nhi', { step: 2 }), say: ['First step.', 'Second step.'] },
     { title: 'Last', hold: 0, say: 'The end.' },

@@ -17,12 +17,6 @@ test('unknown names and missing files are reported, once each', () => {
   ]);
 });
 
-test("other engines' voices are checked against their own list", () => {
-  assert.deepEqual(unknownVoices(['Samantha', 'Samanta'], { isRecorded: () => false, exists: () => false, presets: ['Samantha', 'Daniel'], kind: 'a say voice on this machine' }), [
-    { voice: 'Samanta', why: "isn't a say voice on this machine" },
-  ]);
-});
-
 test("without a preset list, names that aren't recorded are let through", () => {
   assert.deepEqual(unknownVoices(['anything'], { ...env, presets: null }), []);
 });
@@ -35,12 +29,4 @@ test('a speed belongs to the voice it was set with', async () => {
   assert.deepEqual(mergeVoices([machine, [{ seed: 3 }, 'spec']]), { voice: { voice: 'alex', speed: 0.7, seed: 3 }, from: 'machine' });
   assert.deepEqual(mergeVoices([[{ voice: 'alex', speed: 0.7 }], [{ voice: 'alex-dry' }]]).voice, { voice: 'alex-dry' }, 'a style keeps its own calibration');
   assert.deepEqual(mergeVoices([]), { voice: {}, from: 'built-in default' });
-});
-
-test('changing engine replaces the whole narrator', async () => {
-  const { mergeVoices } = await import('../scripts/lib/tts.mjs');
-  const machine = [{ voice: 'alex', speed: 0.7, seed: 3 }, 'machine'];
-  assert.deepEqual(mergeVoices([machine, [{ engine: 'say' }, 'spec']]), { voice: { engine: 'say', seed: 3 }, from: 'spec' });
-  assert.deepEqual(mergeVoices([[{ engine: 'say', voice: 'Samantha', rate: 200 }, 'machine'], [{ voice: 'en_male_narrator_1' }, 'repo']]).voice, { engine: 'say', voice: 'en_male_narrator_1' }, 'a new voice drops the old rate');
-  assert.deepEqual(mergeVoices([machine, [{ engine: 'reverb' }, 'repo']]).voice, { voice: 'alex', speed: 0.7, seed: 3, engine: 'reverb' }, 'naming the same engine changes nothing');
 });
