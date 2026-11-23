@@ -1,0 +1,29 @@
+{
+  "description": "Light: warm paper background, dark terminals, blue accent. For bright rooms and printed stills.",
+  "extends": "midnight",
+  "tokens": {
+    "bg": "#f6f4ef",
+    "bg-glow": "#e4ebfb",
+    "surface": "#ffffff",
+    "surface-sunk": "#1c1f26",
+    "surface-bar": "#2a2e37",
+    "border": "#ddd8cc",
+    "border-strong": "#d2ccbe",
+    "text": "#1b1d22",
+    "text-strong": "#000000",
+    "text-muted": "#3a3f4a",
+    "text-subtle": "#6a7180",
+    "text-faint": "#9a9fa9",
+    "code-text": "#e3e8f2",
+    "code-inline": "#2747a8",
+    "code-inline-bg": "#e9edf8",
+    "accent": "#2f5fe0",
+    "ok": "#148a57",
+    "warn": "#b7791f",
+    "bad": "#d64534",
+    "neutral": "#7a8191",
+    "line-highlight": "rgba(122, 162, 255, 0.22)",
+    "mark": "#e0245e",
+    "shadow": "0 18px 50px rgba(40, 36, 20, 0.14)"
+  }
+}

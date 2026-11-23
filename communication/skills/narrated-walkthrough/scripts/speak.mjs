@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+// Preview narration: hear one line in one or more voices, and see exactly what Reverb reads.
+//
+//   node speak.mjs "Text to read." [--voice en_female_narrator,en_male_narrator_1] [--speed 1.1]
+//                  [--seed 7] [--out DIR] [--play]
+//   node speak.mjs --list
+//
+// Writes <out>/<voice>-seed<seed>.wav (default out: <home>/voice-preview, so nothing lands in the
+// repo you run it from) and prints the read-as text.
+// The default narrator is the machine's (config.json), read and checked as the build reads it,
+// else the en_female_narrator preset; --voice replaces it as a spec's voice would.
+import { execFileSync } from 'node:child_process';
+import { copyFileSync, mkdirSync } from 'node:fs';
+import path from 'node:path';
+import { parseArgs } from 'node:util';
+import { machineNarrator } from './lib/context.mjs';
+import { ConfigError, HOME, SETUP } from './lib/paths.mjs';
+import { checkVoices, listVoices, mergeVoices, prepare, reverbInstalled, resolveVoice, synthesize, voiceName } from './lib/tts.mjs';
+
+process.on('uncaughtException', (e) => {
+  console.error(e instanceof ConfigError || e?.exitCode ? e.message : (e?.stack ?? String(e)));
+  process.exit(e?.exitCode ?? 1);
+});
+
+const USAGE = 'usage: node speak.mjs "Text." [--voice a,b] [--speed 1] [--seed 7] [--out DIR] [--play]\n       node speak.mjs --list';
+let parsed;
+try {
+  parsed = parseArgs({
+    allowPositionals: true,
+    options: {
+      voice: { type: 'string' }, speed: { type: 'string' }, seed: { type: 'string' },
+      out: { type: 'string' }, play: { type: 'boolean' }, list: { type: 'boolean' },
+    },
+  });
+} catch (e) {
+  console.error(`${e.message}\n${USAGE}`);
+  process.exit(2);
+}
+const { values: opt, positionals } = parsed;
+const base = machineNarrator().voice;
+if (opt.list) {
+  const { recorded, presets } = listVoices();
+  if (recorded.length) console.log(`recorded on this machine:\n  ${recorded.join('\n  ')}`);
+  if (presets) console.log(`Reverb presets:\n  ${presets.join('\n  ')}`);
+  else console.log("Reverb's presets couldn't be listed (offline, or Reverb isn't installed: run setup.sh)");
+  process.exit(presets || recorded.length ? 0 : 1);
+}
+const text = positionals.join(' ');
+if (!text) {
+  console.error(USAGE);
+  process.exit(2);
+}
+// --voice a,b, else the narrator's voice (which may be a clone object), else the default preset.
+const voices = opt.voice ? opt.voice.split(',') : [base.voice ?? resolveVoice(base).voiceName];
+if (!reverbInstalled()) {
+  console.error(`Reverb isn't installed. Run: ${SETUP}`);
+  process.exit(1);
+}
+const { unknown, note } = checkVoices(voices);
+if (note) console.log(`note: ${note}`);
+if (unknown.length) {
+  console.error(unknown.map(({ voice: v, why }) => `voice "${v}": ${why}; speak.mjs --list shows the voices you have`).join('\n'));
+  process.exit(1);
+}
+const out = path.resolve(opt.out ?? path.join(HOME, 'voice-preview'));
+mkdirSync(out, { recursive: true });
+const speed = opt.speed ? Number(opt.speed) : undefined; // default: each voice's calibrated speed
+const seed = Number(opt.seed ?? 7);
+
+console.log(`reads as: ${prepare([text], base)[0]}\n`);
+for (const v of voices) {
+  // Same rule as the build: the machine config's speed belongs to its own voice.
+  const cfg = mergeVoices([[base], [{ voice: v, seed, ...(speed ? { speed } : {}) }]]).voice;
+  const [job] = synthesize([{ text }], cfg, path.join(out, '.cache'));
+  const file = path.join(out, `${voiceName(v).replace(/\W+/g, '_')}-seed${seed}.wav`);
+  copyFileSync(job.audio, file);
+  console.log(`${file}  ${job.seconds.toFixed(1)}s`);
+  if (opt.play) execFileSync('afplay', [file]);
+}

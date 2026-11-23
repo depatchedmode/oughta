@@ -26,5 +26,5 @@
 
 - Check changed Markdown links and section anchors, skill frontmatter, and `git diff --check`.
 - Compile or exercise code examples when their code changes; prose-only edits do not require unrelated language builds.
-- This repository has no application build or test suite. Commands in domain fragments are examples for adopting projects, not checks to run here.
+- The repository has no application build. The one test suite is `communication/skills/narrated-walkthrough`'s: when that skill's scripts change, run `node --test tests/*.test.mjs` from its folder (the build tests need its `scripts/setup.sh`; the full-build test needs macOS). Other commands in domain fragments are examples for adopting projects, not checks to run here.
 - Report the changes, checks performed, and any verification limits.

@@ -17,6 +17,18 @@
       "category": "Developer Tools"
     },
     {
+      "name": "communication",
+      "source": {
+        "source": "local",
+        "path": "./communication"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Developer Tools"
+    },
+    {
       "name": "git",
       "source": {
         "source": "local",

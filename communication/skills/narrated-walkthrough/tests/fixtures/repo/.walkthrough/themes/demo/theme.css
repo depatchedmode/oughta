@@ -1,0 +1,4 @@
+/* demo: test fixture for the decor hook */
+[data-theme~="demo"] .frame .brand { position: absolute; left: 24px; top: 16px; font-size: 18px; }
+[data-theme~="demo"] .frame .tracker { position: absolute; left: 0; width: 12px; height: 2px; background: var(--accent); }
+[data-theme~="demo"] .hero-art svg { position: absolute; inset: 0; width: 100%; height: 100%; }

@@ -1,0 +1,10 @@
+{
+  "name": "communication",
+  "version": "0.1.0",
+  "description": "Make narrated video walkthroughs of pull requests, features and systems from real command output, narrated locally.",
+  "author": {
+    "name": "depatchedmode"
+  },
+  "repository": "https://github.com/depatchedmode/oughta",
+  "license": "MIT AND LicenseRef-Endless-Art"
+}
